@@ -1,0 +1,94 @@
+{
+  "maks_siklus": 20,
+  "metode": "suntik",
+  "status_peserta_down": 2,
+  "asuransi_down": 2,
+  "list_desa_down": [
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15
+  ],
+  "koordinat_opsi": {
+    "cari": [
+      379,
+      297
+    ],
+    "excel": [
+      1604,
+      499
+    ],
+    "nik": [
+      488,
+      253
+    ],
+    "desa": [
+      838,
+      338
+    ],
+    "cari_data": [
+      687,
+      428
+    ],
+    "pilih_peserta": [
+      70,
+      506
+    ],
+    "samping_status": [
+      368,
+      537
+    ],
+    "status": [
+      407,
+      537
+    ],
+    "pasca": [
+      404,
+      610
+    ],
+    "asuransi": [
+      413,
+      711
+    ],
+    "alkon": [
+      400,
+      780
+    ],
+    "informed": [
+      814,
+      542
+    ],
+    "tindakan": [
+      812,
+      621
+    ],
+    "alkon_jenis": [
+      815,
+      657
+    ],
+    "bergerak": [
+      810,
+      705
+    ],
+    "tambah": [
+      662,
+      834
+    ]
+  }
+}
