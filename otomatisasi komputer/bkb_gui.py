@@ -11,7 +11,7 @@ import numpy as np
 import os
 import pygetwindow as gw
 
-# --- Global sVariable ---
+# --- Global Variable ---
 fields = [
     "Keanggotaan BKB",
     "Cari Anggota",
@@ -259,3 +259,4 @@ btn_mulai = ttk.Button(frame_bawah, text="▶️ Mulai Otomatisasi", command=lam
 btn_mulai.grid(row=0, column=1, padx=10)
 
 root.mainloop()
+
