@@ -11,7 +11,7 @@ import numpy as np
 import os
 import pygetwindow as gw
 
-# --- Global Variable ---
+# --- Global sVariable ---
 fields = [
     "Keanggotaan BKB",
     "Cari Anggota",
