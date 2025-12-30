@@ -47,9 +47,8 @@ def on_press(key):
 
 # --- Fungsi ambil koordinat ---
 def start_mouse_listener(field):
-    if ok_status.get(field):
-        return
-
+    # allow reselection: clear previous ok flag so user can change coordinates
+    ok_status[field] = False
     show_buttons[field].config(state="normal", text="Menunggu Klik...")
 
     if field in listeners:
@@ -259,4 +258,3 @@ btn_mulai = ttk.Button(frame_bawah, text="▶️ Mulai Otomatisasi", command=lam
 btn_mulai.grid(row=0, column=1, padx=10)
 
 root.mainloop()
-
