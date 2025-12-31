@@ -9,7 +9,6 @@ from PIL import ImageGrab
 import cv2
 import numpy as np
 import os
-import pygetwindow as gw
 
 # --- Global Variable ---
 fields = [
@@ -143,15 +142,6 @@ def mulai_otomatisasi():
     pyautogui.PAUSE = 0.05 * sleep_factor
 
     print("▶️ Mulai Otomatisasi. Tekan 'n' untuk berhenti.")
-
-    for nama_jendela in gw.getWindowsWithTitle("SIGA - Google Chrome"):
-        if nama_jendela.title:
-            nama_jendela.activate()
-            time.sleep(1 * sleep_factor)
-            nama_jendela.moveTo(0, 0)
-            nama_jendela.resizeTo(900, 1020)
-            print("✅ Jendela SIGA diatur.")
-            break
 
     while not berhenti and jumlah_loop < maks_loop:
         jumlah_loop += 1
