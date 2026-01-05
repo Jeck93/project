@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self' https://www.google.com; frame-ancestors 'self' https://www.google.com;">
+    <title>PWA App - Home</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="PWA App">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    
+    <!-- Fallback icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiM0Q0FGNTAIIHJ4PSI2NCIvPjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMzEyIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48cmVjdCB4PSIxMDAiIHk9IjE4MCIgd2lkdGg9IjMxMiIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHJ4PSI4Ii8+PHJlY3QgeD0iMTAwIiB5PSIyNjAiIHdpZHRoPSIzMTIiIGhlaWdodD0iNDAiIGZpbGw9IndoaXRlIiByeD0iOCIvPjxyZWN0IHg9IjEwMCIgeT0iMzQwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzNjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjM1MCIgeT0iMzc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNENBRjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inJM8L3RleHQ+PC9zdmc+">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiM0Q0FGNTAIIHJ4PSI2NCIvPjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMzEyIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48cmVjdCB4PSIxMDAiIHk9IjE4MCIgd2lkdGg9IjMxMiIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHJ4PSI4Ii8+PHJlY3QgeD0iMTAwIiB5PSIyNjAiIHdpZHRoPSIzMTIiIGhlaWdodD0iNDAiIGZpbGw9IndoaXRlIiByeD0iOCIvPjxyZWN0IHg9IjEwMCIgeT0iMzQwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzNjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjM1MCIgeT0iMzc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNENBRjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inJM8L3RleHQ+PC9zdmc+">
+    
+    <link rel="stylesheet" href="css/performance-optimized.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Home</h1>
+            <button id="logoutBtn" class="btn-secondary">🚪 Logout</button>
+        </header>
+
+        <main>
+
+            <div class="welcome-card glow-on-hover">
+                <h2 class="gradient-text">Selamat Datang, <span id="username"></span>!</h2>
+                <p>Laporan Bulanan PPKBD Kec. Ulujami</p>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="window.location.href='form.html'" class="btn-primary">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Input Data Baru</span>
+                </button>
+                <button onclick="exportData()" class="btn-secondary">
+                    <span class="btn-icon">📥</span>
+                    <span class="btn-text">Export Data</span>
+                </button>
+                <button onclick="refreshData()" class="btn-info" id="refreshBtn">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Refresh</span>
+                </button>
+            </div>
+
+            <div class="data-summary">
+                <div class="summary-card glow-on-hover scale-in">
+                    <h3 id="totalData" class="gradient-text">0</h3>
+                    <p>Total Data</p>
+                </div>
+                <div class="data-summary-bottom">
+                    <div class="summary-card glow-on-hover scale-in">
+                        <h3 id="totalMKJP" class="gradient-text-success">0</h3>
+                        <p>Akseptor MKJP</p>
+                    </div>
+                    <div class="summary-card glow-on-hover scale-in">
+                        <h3 id="totalNonMKJP" class="gradient-text-warning">0</h3>
+                        <p>Non MKJP</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="data-header">
+                    <h3>📋 Data Laporan</h3>
+                    <div class="data-controls">
+                        <span id="dataSource" class="data-source">📱 Data Lokal</span>
+                        <span id="connectionStatus" class="connection-status" style="margin-left: 10px;">
+                            <span id="connectionIndicator">🔄</span>
+                            <span id="connectionText">Checking...</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="table-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="🔍 Cari Nama, NIK, Alat kontrasepsi...">
+                    </div>
+                    <div class="pagination-controls">
+                        <label for="itemsPerPage">Tampilkan:</label>
+                        <select id="itemsPerPage" onchange="changeItemsPerPage()">
+                            <option value="all">All</option>
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                        <span>data per halaman</span>
+                    </div>
+                </div>
+                <div id="dataTable"></div>
+                <div class="pagination-info" id="paginationInfo" style="display: none;">
+                    <div class="pagination-status">
+                        <span id="paginationStatus">Menampilkan 1-10 dari 0 data</span>
+                    </div>
+                    <div class="pagination-buttons" id="paginationButtons">
+                        <button onclick="goToPage('prev')" class="btn-small btn-secondary" id="prevBtn" disabled>‹ Sebelumnya</button>
+                        <span id="pageNumbers"></span>
+                        <button onclick="goToPage('next')" class="btn-small btn-secondary" id="nextBtn" disabled>Selanjutnya ›</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <p id="onlineStatus">🟢 Online</p>
+                <button id="installBtn" class="btn-primary" style="display: none;">📱 Install Aplikasi</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/timestamp-utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/connection-recovery.js"></script>
+    <script src="js/sheets-api.js"></script>
+    <script src="js/theme-toggle-optimized.js"></script>
+    <script src="js/performance-optimized.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/fix-data-loading.js"></script>
+    
+    <script>
+        // Initialize theme toggle manually if not already initialized
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (!document.querySelector('.theme-toggle')) {
+                    console.log('Initializing theme toggle manually...');
+                    if (window.ThemeToggle) {
+                        new window.ThemeToggle();
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((registration) => {
+                        console.log('PWA App SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('PWA App SW registration failed: ', registrationError);
+                    });
+            });
+        }
+        
+        // PWA Install Prompt (deferredPrompt sudah dideklarasikan di app.js)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later (menggunakan variabel global dari app.js)
+            window.deferredPrompt = e;
+            
+            // Show install button
+            showInstallButton();
+        });
+        
+        function showInstallButton() {
+            // Update existing install button or create new one
+            let installBtn = document.getElementById('installBtn');
+            if (!installBtn) {
+                installBtn = document.createElement('button');
+                installBtn.id = 'install-btn-pwa';
+                installBtn.innerHTML = '📱 Install App';
+                installBtn.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 25px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+                    z-index: 1000;
+                `;
+                document.body.appendChild(installBtn);
+            } else {
+                installBtn.style.display = 'block';
+            }
+            
+            installBtn.addEventListener('click', async () => {
+                if (window.deferredPrompt) {
+                    // Show the install prompt
+                    window.deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    const { outcome } = await window.deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    // Clear the deferredPrompt variable
+                    window.deferredPrompt = null;
+                    // Hide the install button
+                    installBtn.style.display = 'none';
+                }
+            });
+        }
+        
+        // Hide install button when app is installed
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA App was installed');
+            const installBtn = document.getElementById('installBtn') || document.getElementById('install-btn-pwa');
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

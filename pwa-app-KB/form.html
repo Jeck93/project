@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4CAF50">
+    <title>Form Input - Laporan KB</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/performance-optimized.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <a href="index.html" class="btn-back">← Kembali</a>
+            </div>
+            <h1>📝 Form Input Data</h1>
+            <div class="header-right">
+                <span class="sync-status" id="syncStatus">📱 Offline Mode</span>
+            </div>
+        </header>
+
+        <main>
+
+            <form id="dataForm" class="data-form">
+                <!-- Informasi Desa -->
+                <div class="form-section">
+                    <h3>📍 Informasi Desa</h3>
+                    <div class="form-group">
+                        <label for="desa">Desa Yang Melaporkan <span class="required">*</span></label>
+                        <select id="desa" name="desa" required>
+                            <option value="">Pilih Desa</option>
+                            <option value="Sukorejo">Sukorejo</option>
+                            <option value="Botekan">Botekan</option>
+                            <option value="Rowosari">Rowosari</option>
+                            <option value="Ambowetan">Ambowetan</option>
+                            <option value="Pagergunung">Pagergunung</option>
+                            <option value="Wiyorowetan">Wiyorowetan</option>
+                            <option value="Samong">Samong</option>
+                            <option value="Tasikrejo">Tasikrejo</option>
+                            <option value="Bumirejo">Bumirejo</option>
+                            <option value="Kaliprau">Kaliprau</option>
+                            <option value="Kertosari">Kertosari</option>
+                            <option value="Pamutih">Pamutih</option>
+                            <option value="Padek">Padek</option>
+                            <option value="Blendung">Blendung</option>
+                            <option value="Ketapang">Ketapang</option>
+                            <option value="Limbangan">Limbangan</option>
+                            <option value="Mojo">Mojo</option>
+                            <option value="Pesantren">Pesantren</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tanggalPelayanan">Tanggal Pelayanan <span class="required">*</span></label>
+                        <input type="date" id="tanggalPelayanan" name="tanggalPelayanan" required>
+                    </div>
+                </div>
+
+                <!-- Data Suami -->
+                <div class="form-section">
+                    <h3>👨 Data Suami</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="namaSuami">Nama Suami <span class="required">*</span></label>
+                            <input type="text" id="namaSuami" name="namaSuami" required placeholder="Masukkan nama suami">
+                        </div>
+                        <div class="form-group">
+                            <label for="umurSuami">Umur Suami</label>
+                            <input type="number" id="umurSuami" name="umurSuami" min="18" max="100" placeholder="Masukkan umur">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Istri -->
+                <div class="form-section">
+                    <h3>👩 Data Istri</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="namaIstri">Nama Istri <span class="required">*</span></label>
+                            <input type="text" id="namaIstri" name="namaIstri" required placeholder="Masukkan nama istri">
+                        </div>
+                        <div class="form-group">
+                            <label for="nikIstri">NIK Istri <span class="required">*</span></label>
+                            <input type="text" id="nikIstri" name="nikIstri" required placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tanggalLahirIstri">Tanggal Lahir Istri</label>
+                        <input type="date" id="tanggalLahirIstri" name="tanggalLahirIstri">
+                    </div>
+                </div>
+
+                <!-- Alamat -->
+                <div class="form-section">
+                    <h3>📍 Alamat</h3>
+                    <div class="form-group">
+                        <label for="alamat">Alamat Lengkap <span class="required">*</span></label>
+                        <textarea id="alamat" name="alamat" required placeholder="Masukkan alamat lengkap" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rt">RT <span class="required">*</span></label>
+                            <input type="text" id="rt" name="rt" required placeholder="001" maxlength="3">
+                        </div>
+                        <div class="form-group">
+                            <label for="rw">RW <span class="required">*</span></label>
+                            <input type="text" id="rw" name="rw" required placeholder="001" maxlength="3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noHP">No. HP</label>
+                        <input type="tel" id="noHP" name="noHP" placeholder="08xxxxxxxxxx">
+                    </div>
+                </div>
+
+                <!-- Jenis Kontrasepsi -->
+                <div class="form-section">
+                    <h3>💊 Jenis Kontrasepsi</h3>
+
+                    <div class="method-category mkjp-methods">
+                        <h4>🔹 MKJP (Metode Kontrasepsi Jangka Panjang)</h4>
+                        <div class="radio-group-vertical">
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="IUD" required>
+                                <span>IUD (Intra Uterine Device)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="MOP" required>
+                                <span>MOP (Metode Operasi Pria)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="MOW" required>
+                                <span>MOW (Metode Operasi Wanita)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Implant" required>
+                                <span>Implant/Susuk</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="method-category non-mkjp-methods">
+                        <h4>🔸 NON-MKJP (Metode Kontrasepsi Jangka Pendek)</h4>
+                        <div class="radio-group-vertical">
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Kondom" required>
+                                <span>Kondom</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Suntik 1 Bulan" required>
+                                <span>Suntik 1 Bulan</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Suntik 3 Bulan Kombinasi" required>
+                                <span>Suntik 3 Bulan Kombinasi</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Suntik 3 Bulan Progestin" required>
+                                <span>Suntik 3 Bulan Progestin</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Pil Kombinasi" required>
+                                <span>Pil Kombinasi</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisAlkon" value="Pil Progestin" required>
+                                <span>Pil Progestin</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sub-questions for specific methods -->
+                    <div id="implantSubQuestion" class="sub-question" style="display: none;">
+                        <h4>Jenis Implant:</h4>
+                        <div class="radio-group-vertical">
+                            <label>
+                                <input type="radio" name="jenisImplant" value="1 Batang">
+                                <span>1 Batang (3 tahun)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="jenisImplant" value="2 Batang">
+                                <span>2 Batang (3 tahun)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kepesertaan KB -->
+                <!-- Kepesertaan KB -->
+                <div class="form-section">
+                    <h3>📋 Kepesertaan KB</h3>
+                    <div class="radio-group-vertical">
+                        <label>
+                            <input type="radio" name="kepesertaanKB" value="Baru" required>
+                            <span>Baru</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="kepesertaanKB" value="Ulangan" required>
+                            <span>Ulangan</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="kepesertaanKB" value="Ganti Cara" required>
+                            <span>Ganti Cara</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="kepesertaanKB" value="Bongkar" required>
+                            <span>Bongkar</span>
+                        </label>
+                    </div>
+
+                    <!-- Sub-question for "Baru" option -->
+                    <div id="subKepesertaanBaru" class="sub-question" style="display: none;">
+                        <h4>Jika Baru, pilih kondisi:</h4>
+                        <div class="radio-group-vertical">
+                            <label>
+                                <input type="radio" name="kondisiBaru" value="Pasca Persalinan">
+                                <span>🤱 Pasca Persalinan</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="kondisiBaru" value="Pasca Keguguran">
+                                <span>💔 Pasca Keguguran</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="kondisiBaru" value="Tidak Keduanya">
+                                <span>➖ Tidak Keduanya</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sub-question for "Ganti Cara" option -->
+                    <div id="subKepesertaanGanti" class="sub-question" style="display: none;">
+                        <h4>Alat Kontrasepsi yang sebelumnya dipakai:</h4>
+                        
+                        <!-- Previous MKJP Methods -->
+                        <div class="method-category">
+                            <h5>📋 MKJP Sebelumnya</h5>
+                            <div class="radio-group-vertical">
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="IUD">
+                                    <span>🔹 IUD (Intra Uterine Device)</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Implant">
+                                    <span>🔹 Implant/Susuk</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="MOP">
+                                    <span>🔹 MOP (Metode Operasi Pria)</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="MOW">
+                                    <span>🔹 MOW (Metode Operasi Wanita)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Previous NON MKJP Methods -->
+                        <div class="method-category non-mkjp-methods">
+                            <h5>📋 NON MKJP Sebelumnya</h5>
+                            <div class="radio-group-vertical">
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Suntik 1 Bulan">
+                                    <span>💉 Suntik 1 Bulan</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Suntik 3 Bulan Kombinasi">
+                                    <span>💉 Suntik 3 Bulan Kombinasi</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Suntik 3 Bulan Progestin">
+                                    <span>💉 Suntik 3 Bulan Progestin</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Pil Kombinasi">
+                                    <span>💊 Pil Kombinasi</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Pil Progestin">
+                                    <span>💊 Pil Progestin</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="alkonSebelumnya" value="Kondom">
+                                    <span>🔹 Kondom</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tempat Pelayanan -->
+                <div class="form-section">
+                    <h3>🏥 Tempat Pelayanan</h3>
+                    <div class="radio-group-vertical">
+                        <label>
+                            <input type="radio" name="tempatPelayanan" value="Puskesmas Rowosari" required>
+                            <span>Puskesmas Rowosari</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tempatPelayanan" value="Puskesmas Mojo" required>
+                            <span>Puskesmas Mojo</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tempatPelayanan" value="Bidan" required>
+                            <span>Bidan</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tempatPelayanan" value="PPKBD" required>
+                            <span>PPKBD</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tempatPelayanan" value="Lainnya" required>
+                            <span>Lainnya</span>
+                        </label>
+                    </div>
+
+                    <!-- Sub-question for "Lainnya" option -->
+                    <div id="subTempatPelayananLainnya" class="sub-question" style="display: none;">
+                        <h4>Sebutkan tempat pelayanan lainnya:</h4>
+                        <div class="form-group">
+                            <input type="text" name="tempatPelayananLainnya" placeholder="Ketik nama tempat pelayanan..." maxlength="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Akseptor -->
+                <div class="form-section">
+                    <h3>👥 Status Akseptor</h3>
+                    
+                    <div class="form-group">
+                        <label>Asuransi Yang di Pakai <span class="required">*</span></label>
+                        <div class="radio-group-vertical">
+                            <label>
+                                <input type="radio" name="akseptorPajak" value="BPJS Kesehatan" required>
+                                <span>BPJS Kesehatan</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="akseptorPajak" value="Lainnya" required>
+                                <span>Lainnya</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="akseptorPajak" value="Tidak" required>
+                                <span>Tidak</span>
+                            </label>
+                        </div>
+
+                        <!-- Sub-question for "Lainnya" option -->
+                        <div id="subAsuransiLainnya" class="sub-question" style="display: none;">
+                            <h4>Sebutkan asuransi lainnya:</h4>
+                            <div class="form-group">
+                                <input type="text" name="asuransiLainnya" placeholder="Ketik nama asuransi..." maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Akseptor KIE PPKBD <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="akseptorKIE" value="Ya" required>
+                                Ya
+                            </label>
+                            <label>
+                                <input type="radio" name="akseptorKIE" value="Tidak" required>
+                                Tidak
+                            </label>
+                        </div>
+                        <small>KIE = Komunikasi, Informasi, dan Edukasi Program Perencanaan Keluarga dan Kependudukan Berkelanjutan</small>
+                    </div>
+
+                    <!-- Upload Foto KTP -->
+                    <div class="form-group">
+                        <label for="fotoKTP">📸 Foto KTP</label>
+                        <input type="file" id="fotoKTP" name="fotoKTP" accept="image/*" capture="camera">
+                        
+                        <!-- Preview Container -->
+                        <div id="fotoKTPPreview" class="image-preview-container" style="display: none;">
+                            <div class="image-preview-header">
+                                <span>Preview Foto KTP:</span>
+                                <button type="button" id="removeFotoKTP" class="btn-remove-image">❌ Hapus</button>
+                            </div>
+                            <div class="image-preview-wrapper">
+                                <img id="fotoKTPImage" src="" alt="Preview KTP" class="image-preview">
+                            </div>
+                            <div class="image-info">
+                                <span id="fotoKTPInfo"></span>
+                            </div>
+                        </div>
+                        
+                        <small>
+                            📋 Upload foto KTP (opsional)<br>
+                            • Format: JPG, PNG, dll<br>
+                            • Maksimal: 5MB<br>
+                            • Akan disimpan ke Google Drive
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" onclick="window.history.back()" class="btn-secondary">
+                        ❌ Batal
+                    </button>
+                    <button type="submit" id="submitBtn" class="btn-primary">
+                        ✅ Simpan Data
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/timestamp-utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/theme-toggle-optimized.js"></script>
+    <script src="js/sheets-api.js"></script>
+    <script src="js/form.js"></script>
+    
+    <!-- Debug Script -->
+    <script>
+        // Debug form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 DEBUG: DOM loaded for form.html');
+            
+            // Check if form exists
+            const form = document.getElementById('dataForm');
+            if (form) {
+                console.log('✅ DEBUG: Form found!', form);
+                
+                // Add backup event listener
+                form.addEventListener('submit', function(e) {
+                    console.log('🚀 DEBUG: Backup form submission triggered!');
+                    console.log('Event:', e);
+                    console.log('Form data test...');
+                    
+                    const formData = new FormData(this);
+                    const data = {};
+                    for (let [key, value] of formData.entries()) {
+                        data[key] = value;
+                    }
+                    console.log('Form data:', data);
+                    
+                    // Don't prevent default here to see if main handler works
+                });
+                
+                console.log('✅ DEBUG: Backup event listener added');
+            } else {
+                console.error('❌ DEBUG: Form NOT found!');
+            }
+            
+            // Check submit button
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                console.log('✅ DEBUG: Submit button found!', submitBtn);
+                
+                // Add click listener to submit button
+                submitBtn.addEventListener('click', function(e) {
+                    console.log('🖱️ DEBUG: Submit button clicked!');
+                    console.log('Button type:', this.type);
+                    console.log('Button form:', this.form);
+                });
+            } else {
+                console.error('❌ DEBUG: Submit button NOT found!');
+            }
+            
+            // Debug photo preview elements
+            console.log('📸 DEBUG: Checking photo preview elements...');
+            const photoElements = {
+                'fotoKTP': document.getElementById('fotoKTP'),
+                'fotoKTPPreview': document.getElementById('fotoKTPPreview'),
+                'fotoKTPImage': document.getElementById('fotoKTPImage'),
+                'fotoKTPInfo': document.getElementById('fotoKTPInfo'),
+                'removeFotoKTP': document.getElementById('removeFotoKTP')
+            };
+            
+            for (const [name, el] of Object.entries(photoElements)) {
+                if (el) {
+                    console.log(`✅ DEBUG: ${name} found`, el);
+                } else {
+                    console.error(`❌ DEBUG: ${name} NOT found!`);
+                }
+            }
+            
+            // Test file input directly
+            const fileInput = document.getElementById('fotoKTP');
+            if (fileInput) {
+                console.log('🧪 DEBUG: Adding test event listener to file input...');
+                fileInput.addEventListener('change', function(e) {
+                    console.log('🔥 DEBUG: Direct file input change detected!', e.target.files);
+                });
+            }
+            
+            // Emergency backup photo preview (in case main one fails)
+            setTimeout(() => {
+                console.log('🚨 EMERGENCY: Setting up backup photo preview...');
+                const fileInput = document.getElementById('fotoKTP');
+                const previewContainer = document.getElementById('fotoKTPPreview');
+                const previewImage = document.getElementById('fotoKTPImage');
+                const previewInfo = document.getElementById('fotoKTPInfo');
+                const removeButton = document.getElementById('removeFotoKTP');
+                
+                if (fileInput && previewContainer && previewImage && previewInfo && removeButton) {
+                    console.log('🔧 EMERGENCY: All elements found, setting up emergency preview...');
+                    
+                    // Remove existing listeners to avoid duplicates
+                    const newFileInput = fileInput.cloneNode(true);
+                    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+                    
+                    // Add emergency event listener
+                    newFileInput.addEventListener('change', function(e) {
+                        console.log('🚨 EMERGENCY: File selected via backup handler!', e.target.files);
+                        const file = e.target.files[0];
+                        
+                        if (file) {
+                            // Validate
+                            if (!file.type.startsWith('image/')) {
+                                alert('❌ File harus berupa gambar (JPG, PNG, dll)');
+                                newFileInput.value = '';
+                                return;
+                            }
+                            
+                            if (file.size > 5 * 1024 * 1024) {
+                                alert('❌ Ukuran file maksimal 5MB');
+                                newFileInput.value = '';
+                                return;
+                            }
+                            
+                            // Show preview
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                console.log('🖼️ EMERGENCY: Showing preview...');
+                                previewImage.src = e.target.result;
+                                previewInfo.textContent = `📁 ${file.name} (${formatFileSize(file.size)})`;
+                                previewContainer.style.display = 'block';
+                                previewContainer.classList.add('has-image');
+                                
+                                // Animation
+                                previewContainer.style.opacity = '0';
+                                setTimeout(() => {
+                                    previewContainer.style.transition = 'all 0.3s ease';
+                                    previewContainer.style.opacity = '1';
+                                }, 10);
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            previewContainer.style.display = 'none';
+                            previewContainer.classList.remove('has-image');
+                        }
+                    });
+                    
+                    // Remove button
+                    const newRemoveButton = removeButton.cloneNode(true);
+                    removeButton.parentNode.replaceChild(newRemoveButton, removeButton);
+                    
+                    newRemoveButton.addEventListener('click', function() {
+                        console.log('🗑️ EMERGENCY: Remove button clicked');
+                        newFileInput.value = '';
+                        previewContainer.style.display = 'none';
+                        previewContainer.classList.remove('has-image');
+                        previewImage.src = '';
+                        previewInfo.textContent = '';
+                    });
+                    
+                    console.log('✅ EMERGENCY: Backup photo preview setup complete!');
+                } else {
+                    console.error('❌ EMERGENCY: Some elements still missing for backup preview');
+                }
+                
+                function formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                }
+            }, 3000); // Wait 3 seconds before emergency backup
+        });
+    </script>
+</body>
+</html>

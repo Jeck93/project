@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scalp Trading Dashboard</title>
+    <link rel="stylesheet" href="css/scalp-trading.css">
+</head>
+<body>
+<div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1>🤖 AI Scalp Trading Analysis - XAU/USD</h1>
+            <div class="header-controls">
+                <div class="connection-status">
+                    <span id="connectionStatus" class="status-connected">Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Trading Signals Panel -->
+            <section class="signals-panel">
+                <h2>🎯 AI Trading Signals</h2>
+                <div class="signal-card" id="currentSignal">
+                    <div class="signal-header">
+                        <span class="signal-action" id="signalAction">HOLD</span>
+                        <span class="signal-confidence" id="signalConfidence">0%</span>
+                    </div>
+                    <div class="signal-details">
+                        <div class="price-info">
+                            <span>Entry: <span id="entryPrice">-</span></span>
+                            <span>Stop Loss: <span id="stopLoss">-</span></span>
+                            <span>Take Profit: <span id="takeProfit">-</span></span>
+                        </div>
+                        <div class="risk-reward">
+                            Risk/Reward: <span id="riskReward">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="disclaimer">
+                    <small>🎯 AI analysis signals - Use TradingView chart above for market validation</small>
+                </div>
+            </section>
+
+            <!-- TradingView Real Market Chart -->
+            <section class="tradingview-panel">
+                <h2>📈 XAU/USD Real Market Analysis</h2>
+                <div class="tradingview-container">
+                    <!-- TradingView Symbol Overview Widget -->
+                    <div class="tradingview-widget-container" style="height:400px;width:100%">
+                        <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+                        {
+                        "symbols": [
+                            [
+                            "OANDA:XAUUSD|1D"
+                            ]
+                        ],
+                        "chartOnly": false,
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "en",
+                        "colorTheme": "dark",
+                        "autosize": true,
+                        "showVolume": false,
+                        "showMA": false,
+                        "hideDateRanges": false,
+                        "hideMarketStatus": false,
+                        "hideSymbolLogo": false,
+                        "scalePosition": "right",
+                        "scaleMode": "Normal",
+                        "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+                        "fontSize": "10",
+                        "noTimeScale": false,
+                        "valuesTracking": "1",
+                        "changeMode": "price-and-percent",
+                        "chartType": "area"
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="chart-controls">
+                    <div class="chart-info">
+                        <small>📊 Real-time Gold price from TradingView</small>
+                    </div>
+                </div>
+            </section>
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="chart-controls">
+                    <div class="chart-info">
+                        <small>📊 Real-time Gold price with professional indicators</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Indicators -->
+            <section class="indicators-panel">
+                <h2>📊 Technical Analysis</h2>
+                <div class="indicators-grid">
+                    <div class="indicator-card">
+                        <h3>RSI (14)</h3>
+                        <div class="indicator-value" id="rsiValue">-</div>
+                        <div class="indicator-signal" id="rsiSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>MACD</h3>
+                        <div class="indicator-value" id="macdValue">-</div>
+                        <div class="indicator-signal" id="macdSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>EMA Cross</h3>
+                        <div class="indicator-value" id="emaValue">-</div>
+                        <div class="indicator-signal" id="emaSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>Volume</h3>
+                        <div class="indicator-value" id="volumeValue">-</div>
+                        <div class="indicator-signal" id="volumeSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>Market Session</h3>
+                        <div class="indicator-value" id="sessionValue">-</div>
+                        <div class="indicator-signal" id="sessionSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>Trend Regression</h3>
+                        <div class="indicator-value" id="regressionValue">-</div>
+                        <div class="indicator-signal" id="regressionSignal">-</div>
+                    </div>
+                    <div class="indicator-card">
+                        <h3>Trend Alignment</h3>
+                        <div class="indicator-value" id="alignmentValue">-</div>
+                        <div class="indicator-signal" id="alignmentSignal">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Market Data & Order Book Row -->
+            <div class="market-orderbook-row">
+                <!-- Market Data -->
+                <section class="market-panel">
+                    <h2>💹 Analysis Data</h2>
+                    <div class="market-stats">
+                        <div class="stat-item">
+                            <label>Analysis Price:</label>
+                            <span id="currentPrice">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Price Change:</label>
+                            <span id="priceChange">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Volume:</label>
+                            <span id="volume24h">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Spread:</label>
+                            <span id="spread">-</span>
+                        </div>
+                    </div>
+                    <div class="market-note">
+                        <small>📊 Analysis metrics for AI signals</small>
+                    </div>
+                </section>
+
+                <!-- Order Book -->
+                <section class="orderbook-panel">
+                    <h2>📋 Order Book (Analysis)</h2>
+                    <div class="orderbook-container">
+                        <div class="asks-section">
+                            <h4>Asks (Sell Orders)</h4>
+                            <div id="asksList" class="orders-list"></div>
+                        </div>
+                        <div class="bids-section">
+                            <h4>Bids (Buy Orders)</h4>
+                            <div id="bidsList" class="orders-list"></div>
+                        </div>
+                    </div>
+                    <div class="orderbook-note">
+                        <small>📋 Simulated order book for analysis</small>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Trading History -->
+            <section class="history-panel">
+                <h2>📜 Signal History</h2>
+                <div class="history-container">
+                    <table id="signalHistory">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Signal</th>
+                                <th>Price</th>
+                                <th>Confidence</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/gold-trading-config.js"></script>
+    <script src="js/technical-indicators.js"></script>
+    <script src="js/trend-regression.js"></script>
+    <script src="js/scalp-trading-ai.js"></script>
+    <script src="js/scalp-dashboard-real.js"></script>
+</body>
+</html>

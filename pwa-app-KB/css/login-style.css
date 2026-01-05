@@ -1,0 +1,289 @@
+/* =========================================
+   LOGIN STYLE - PWA APP
+   Based on Tugas 2 design with Kemendikbudristek theme
+========================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* =========================================
+   LOGIN PAGE
+========================================= */
+.login-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-box {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Logo section */
+.logo-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-section .logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.logo-text p {
+  color: #444;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 18px;
+}
+
+/* Form styling */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+.password-container {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* Button styling */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Links styling */
+.forgot, .register {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.forgot a, .register a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.forgot a:hover, .register a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Error message */
+.error-msg {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Demo info */
+.demo-info {
+  background: #d1ecf1;
+  color: #0c5460;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  border: 1px solid #bee5eb;
+}
+
+.demo-info p {
+  margin: 0;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+  }
+  
+  .login-box {
+    padding: 25px 20px;
+  }
+  
+  .logo-section .logo {
+    width: 70px;
+  }
+  
+  .logo-text h3 {
+    font-size: 18px;
+  }
+  
+  input {
+    padding: 10px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  button {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
+/* =========================================
+   PWA INSTALL BUTTON STYLING
+========================================= */
+#install-btn-pwa {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #2563eb !important;
+  color: white !important;
+  border: none !important;
+  padding: 12px 20px !important;
+  border-radius: 25px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+  z-index: 1000 !important;
+  width: auto !important;
+  margin: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+#install-btn-pwa:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* =========================================
+   LOADING ANIMATION
+========================================= */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loading button {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.loading button:after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================================
+   ACCESSIBILITY IMPROVEMENTS
+========================================= */
+button:focus,
+input:focus,
+a:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .login-box {
+    border: 2px solid #000;
+  }
+  
+  input {
+    border: 2px solid #000;
+  }
+  
+  button {
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
