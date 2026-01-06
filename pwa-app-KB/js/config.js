@@ -20,7 +20,7 @@ const CONFIG = {
     // Change these values to update the PWA demo login username/password
     AUTH: {
         USERNAME: 'admin',
-        PASSWORD: 'admin'
+        PASSWORD: 'admin123'
     }
 };
 
