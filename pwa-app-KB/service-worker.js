@@ -12,7 +12,6 @@ const urlsToCache = [
   './js/app.js',
   './js/form.js',
   './js/edit.js',
-  './js/config.js',
   './js/sheets-api.js',
   './js/db-utils.js',
   './js/theme-toggle-optimized.js',
@@ -71,6 +70,20 @@ self.addEventListener('fetch', event => {
       fetch(event.request.clone()).catch(error => {
         console.warn('Failed to fetch fresh timestamp-utils.js:', error);
         // If network fails, try cache as last resort
+        return caches.match(event.request);
+      })
+    );
+    return;
+  }
+
+  // Network-first for config.js so credential/config updates take effect immediately
+  if (url.includes('config.js')) {
+    console.log('Bypassing cache for config.js to ensure fresh configuration');
+    event.respondWith(
+      fetch(event.request.clone()).then(response => {
+        return response;
+      }).catch(error => {
+        console.warn('Failed to fetch config.js from network, falling back to cache:', error);
         return caches.match(event.request);
       })
     );
