@@ -35,7 +35,7 @@ class AuthManager {
             // Load configured credentials from `CONFIG.AUTH` if available
             const authConfig = (typeof CONFIG !== 'undefined') ? CONFIG.AUTH : null;
             const validUsername = authConfig && authConfig.USERNAME ? authConfig.USERNAME : 'admin';
-            const validPassword = authConfig && authConfig.PASSWORD ? authConfig.PASSWORD : 'admin';
+            const validPassword = authConfig && authConfig.PASSWORD ? authConfig.PASSWORD : 'admin123';
 
             if (username === validUsername && password === validPassword) {
                 // Store auth token
