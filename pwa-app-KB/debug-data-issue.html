@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Data Loading Issue</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .debug-title {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .debug-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .debug-button:hover {
+            background: #45a049;
+        }
+        .debug-button.danger {
+            background: #f44336;
+        }
+        .debug-button.danger:hover {
+            background: #da190b;
+        }
+        .debug-button.warning {
+            background: #ff9800;
+        }
+        .debug-button.warning:hover {
+            background: #e68900;
+        }
+        .debug-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online { background: #4CAF50; }
+        .status-offline { background: #f44336; }
+        .status-warning { background: #ff9800; }
+        .data-preview {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fafafa;
+        }
+        .data-item {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+            font-size: 12px;
+        }
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        .empty-row {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .valid-row {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Data Loading Issue</h1>
+    <p>Tool untuk mendiagnosis dan memperbaiki masalah loading data yang menampilkan baris kosong.</p>
+
+    <div class="debug-container">
+        <h2 class="debug-title">📊 Status Aplikasi</h2>
+        <p><span class="status-indicator" id="connectionStatus"></span><span id="connectionText">Checking...</span></p>
+        <p><span class="status-indicator" id="dbStatus"></span><span id="dbText">Checking IndexedDB...</span></p>
+        <p><span class="status-indicator" id="sheetsStatus"></span><span id="sheetsText">Checking Google Sheets...</span></p>
+        
+        <button class="debug-button" onclick="checkAllStatus()">🔄 Refresh Status</button>
+    </div>
+
+    <div class="debug-container">
+        <h2 class="debug-title">🔍 Diagnosa Data</h2>
+        <button class="debug-button" onclick="analyzeCurrentData()">📊 Analisis Data Saat Ini</button>
+        <button class="debug-button" onclick="testGoogleSheetsConnection()">🌐 Test Koneksi Google Sheets</button>
+        <button class="debug-button" onclick="showAllColumns()">📋 Lihat Semua Kolom</button>
+        <button class="debug-button" onclick="findEmptyRows()">🗑️ Cari Baris Kosong</button>
+        
+        <div id="diagnosisOutput" class="debug-output" style="display: none;"></div>
+    </div>
+
+    <div class="debug-container">
+        <h2 class="debug-title">🔧 Perbaikan Cepat</h2>
+        <button class="debug-button" onclick="quickFixDataLoading()">⚡ Quick Fix Data Loading</button>
+        <button class="debug-button warning" onclick="clearAllLocalData()">🧹 Clear Data Lokal</button>
+        <button class="debug-button warning" onclick="forceRefreshFromSheets()">☁️ Force Refresh dari Sheets</button>
+        <button class="debug-button danger" onclick="resetEverything()">🚨 Reset Semua</button>
+        
+        <div id="fixOutput" class="debug-output" style="display: none;"></div>
+    </div>
+
+    <div class="debug-container">
+        <h2 class="debug-title">📋 Preview Data</h2>
+        <button class="debug-button" onclick="previewCurrentData()">👀 Preview Data Saat Ini</button>
+        <button class="debug-button" onclick="previewSheetsData()">☁️ Preview Data dari Sheets</button>
+        
+        <div id="dataPreview" class="data-preview" style="display: none;"></div>
+    </div>
+
+    <div class="debug-container">
+        <h2 class="debug-title">📝 Log Console</h2>
+        <button class="debug-button" onclick="clearConsoleLog()">🧹 Clear Log</button>
+        <button class="debug-button" onclick="exportDebugLog()">💾 Export Log</button>
+        
+        <div id="consoleLog" class="debug-output"></div>
+    </div>
+
+    <!-- Include necessary scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/timestamp-utils.js"></script>
+    <script src="js/sheets-api.js"></script>
+    <script src="js/fix-data-loading.js"></script>
+
+    <script>
+        // Debug logging
+        let debugLog = [];
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+
+        console.log = function(...args) {
+            const message = args.join(' ');
+            debugLog.push(`[LOG] ${new Date().toLocaleTimeString()}: ${message}`);
+            updateConsoleLog();
+            originalConsoleLog.apply(console, args);
+        };
+
+        console.error = function(...args) {
+            const message = args.join(' ');
+            debugLog.push(`[ERROR] ${new Date().toLocaleTimeString()}: ${message}`);
+            updateConsoleLog();
+            originalConsoleError.apply(console, args);
+        };
+
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            debugLog.push(`[WARN] ${new Date().toLocaleTimeString()}: ${message}`);
+            updateConsoleLog();
+            originalConsoleWarn.apply(console, args);
+        };
+
+        function updateConsoleLog() {
+            const logElement = document.getElementById('consoleLog');
+            logElement.textContent = debugLog.slice(-50).join('\n'); // Show last 50 entries
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearConsoleLog() {
+            debugLog = [];
+            updateConsoleLog();
+        }
+
+        function exportDebugLog() {
+            const logText = debugLog.join('\n');
+            const blob = new Blob([logText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `debug-log-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Status checking functions
+        async function checkAllStatus() {
+            console.log('🔄 Checking all status...');
+            
+            // Check connection
+            const connectionStatus = document.getElementById('connectionStatus');
+            const connectionText = document.getElementById('connectionText');
+            
+            if (navigator.onLine) {
+                connectionStatus.className = 'status-indicator status-online';
+                connectionText.textContent = 'Online';
+            } else {
+                connectionStatus.className = 'status-indicator status-offline';
+                connectionText.textContent = 'Offline';
+            }
+
+            // Check IndexedDB
+            const dbStatus = document.getElementById('dbStatus');
+            const dbText = document.getElementById('dbText');
+            
+            try {
+                if ('indexedDB' in window) {
+                    dbStatus.className = 'status-indicator status-online';
+                    dbText.textContent = 'IndexedDB Available';
+                } else {
+                    dbStatus.className = 'status-indicator status-offline';
+                    dbText.textContent = 'IndexedDB Not Supported';
+                }
+            } catch (error) {
+                dbStatus.className = 'status-indicator status-offline';
+                dbText.textContent = 'IndexedDB Error';
+            }
+
+            // Check Google Sheets
+            const sheetsStatus = document.getElementById('sheetsStatus');
+            const sheetsText = document.getElementById('sheetsText');
+            
+            try {
+                if (window.sheetsAPI) {
+                    const testResult = await window.sheetsAPI.testConnectionJSONP();
+                    if (testResult.success) {
+                        sheetsStatus.className = 'status-indicator status-online';
+                        sheetsText.textContent = 'Google Sheets Connected';
+                    } else {
+                        sheetsStatus.className = 'status-indicator status-warning';
+                        sheetsText.textContent = 'Google Sheets Connection Issues';
+                    }
+                } else {
+                    sheetsStatus.className = 'status-indicator status-offline';
+                    sheetsText.textContent = 'SheetsAPI Not Initialized';
+                }
+            } catch (error) {
+                sheetsStatus.className = 'status-indicator status-offline';
+                sheetsText.textContent = 'Google Sheets Error';
+            }
+        }
+
+        // Diagnosis functions
+        async function analyzeCurrentData() {
+            const output = document.getElementById('diagnosisOutput');
+            output.style.display = 'block';
+            output.textContent = 'Analyzing current data...\n';
+
+            try {
+                let analysis = '=== ANALISIS DATA SAAT INI ===\n\n';
+
+                // Check if data exists
+                if (window.allData) {
+                    analysis += `Total data loaded: ${window.allData.length}\n`;
+                    analysis += `Filtered data: ${window.filteredData ? window.filteredData.length : 'undefined'}\n\n`;
+
+                    if (window.allData.length > 0) {
+                        // Analyze data quality
+                        let validRows = 0;
+                        let emptyRows = 0;
+                        let missingDates = 0;
+                        let missingNames = 0;
+                        let missingAlkon = 0;
+
+                        window.allData.forEach(item => {
+                            const hasName = item.namaIstri && item.namaIstri.trim() !== '' && item.namaIstri !== '-';
+                            const hasNIK = item.nikIstri && item.nikIstri.trim() !== '' && item.nikIstri !== '-';
+                            const hasAlkon = item.jenisAlkon && item.jenisAlkon.trim() !== '' && item.jenisAlkon !== '-';
+                            const hasDate = item.tanggalPelayanan && item.tanggalPelayanan !== 'No Date Found' && item.tanggalPelayanan !== '';
+
+                            if ((hasName || hasNIK) && hasAlkon && hasDate) {
+                                validRows++;
+                            } else {
+                                emptyRows++;
+                            }
+
+                            if (!hasDate) missingDates++;
+                            if (!hasName) missingNames++;
+                            if (!hasAlkon) missingAlkon++;
+                        });
+
+                        analysis += `KUALITAS DATA:\n`;
+                        analysis += `✅ Valid rows: ${validRows}\n`;
+                        analysis += `❌ Empty/invalid rows: ${emptyRows}\n`;
+                        analysis += `📅 Missing dates: ${missingDates}\n`;
+                        analysis += `👤 Missing names: ${missingNames}\n`;
+                        analysis += `💊 Missing alkon: ${missingAlkon}\n\n`;
+
+                        // Show sample data
+                        analysis += `SAMPLE DATA (first 3 items):\n`;
+                        window.allData.slice(0, 3).forEach((item, index) => {
+                            analysis += `${index + 1}. ${item.namaIstri || 'NO NAME'} | ${item.nikIstri || 'NO NIK'} | ${item.jenisAlkon || 'NO ALKON'} | ${item.tanggalPelayanan || 'NO DATE'}\n`;
+                        });
+
+                        if (emptyRows > 0) {
+                            analysis += `\n⚠️ MASALAH DITEMUKAN: ${emptyRows} baris kosong/tidak valid\n`;
+                            analysis += `💡 SOLUSI: Gunakan "Quick Fix Data Loading" untuk membersihkan data\n`;
+                        }
+                    } else {
+                        analysis += '❌ Tidak ada data yang dimuat\n';
+                        analysis += '💡 SOLUSI: Coba "Force Refresh dari Sheets"\n';
+                    }
+                } else {
+                    analysis += '❌ Variable allData tidak ditemukan\n';
+                    analysis += '💡 SOLUSI: Refresh halaman atau load ulang aplikasi\n';
+                }
+
+                output.textContent = analysis;
+            } catch (error) {
+                output.textContent = `Error analyzing data: ${error.message}`;
+            }
+        }
+
+        async function testGoogleSheetsConnection() {
+            const output = document.getElementById('diagnosisOutput');
+            output.style.display = 'block';
+            output.textContent = 'Testing Google Sheets connection...\n';
+
+            try {
+                if (!window.sheetsAPI) {
+                    output.textContent = 'Error: SheetsAPI not initialized';
+                    return;
+                }
+
+                const result = await window.sheetsAPI.testConnectionDetailed();
+                
+                let report = '=== GOOGLE SHEETS CONNECTION TEST ===\n\n';
+                report += `URL: ${result.url}\n`;
+                report += `Timestamp: ${result.timestamp}\n\n`;
+
+                Object.keys(result.tests).forEach(testName => {
+                    const test = result.tests[testName];
+                    const status = test.success ? '✅' : '❌';
+                    report += `${status} ${testName}: ${test.success ? 'PASSED' : 'FAILED'}\n`;
+                    if (!test.success && test.error) {
+                        report += `   Error: ${test.error}\n`;
+                    }
+                    if (test.message) {
+                        report += `   Message: ${test.message}\n`;
+                    }
+                    report += '\n';
+                });
+
+                const passedTests = Object.values(result.tests).filter(test => test.success).length;
+                const totalTests = Object.keys(result.tests).length;
+                
+                report += `SUMMARY: ${passedTests}/${totalTests} tests passed\n`;
+                
+                if (passedTests === totalTests) {
+                    report += '🎉 All tests passed! Connection should work.\n';
+                } else {
+                    report += '⚠️ Some tests failed. Check individual results above.\n';
+                }
+
+                output.textContent = report;
+            } catch (error) {
+                output.textContent = `Connection test failed: ${error.message}`;
+            }
+        }
+
+        async function showAllColumns() {
+            const output = document.getElementById('diagnosisOutput');
+            output.style.display = 'block';
+            output.textContent = 'Getting column information from Google Sheets...\n';
+
+            try {
+                const result = await window.sheetsAPI.getAllData();
+                
+                if (result && result.success && result.data && result.data.length > 0) {
+                    const firstRecord = result.data[0];
+                    const keys = Object.keys(firstRecord);
+                    
+                    let report = `=== SEMUA KOLOM DI GOOGLE SHEETS ===\n\n`;
+                    report += `Total kolom: ${keys.length}\n\n`;
+                    
+                    keys.forEach((key, index) => {
+                        const value = firstRecord[key];
+                        const preview = String(value).substring(0, 50) + (String(value).length > 50 ? '...' : '');
+                        report += `${index + 1}. "${key}"\n`;
+                        report += `   Contoh: "${preview}"\n`;
+                        report += `   Type: ${typeof value}\n\n`;
+                    });
+                    
+                    output.textContent = report;
+                } else {
+                    output.textContent = 'Error: Tidak bisa mengambil data dari Google Sheets';
+                }
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function findEmptyRows() {
+            const output = document.getElementById('diagnosisOutput');
+            output.style.display = 'block';
+
+            if (!window.allData || window.allData.length === 0) {
+                output.textContent = 'Tidak ada data untuk dianalisis';
+                return;
+            }
+
+            let report = '=== ANALISIS BARIS KOSONG ===\n\n';
+            
+            const emptyRows = [];
+            const validRows = [];
+
+            window.allData.forEach((item, index) => {
+                const hasName = item.namaIstri && item.namaIstri.trim() !== '' && item.namaIstri !== '-';
+                const hasNIK = item.nikIstri && item.nikIstri.trim() !== '' && item.nikIstri !== '-';
+                const hasAlkon = item.jenisAlkon && item.jenisAlkon.trim() !== '' && item.jenisAlkon !== '-';
+                const hasDate = item.tanggalPelayanan && item.tanggalPelayanan !== 'No Date Found' && item.tanggalPelayanan !== '';
+
+                const isValid = (hasName || hasNIK) && hasAlkon;
+
+                if (isValid) {
+                    validRows.push({ index, item });
+                } else {
+                    emptyRows.push({ index, item, issues: {
+                        noName: !hasName,
+                        noNIK: !hasNIK,
+                        noAlkon: !hasAlkon,
+                        noDate: !hasDate
+                    }});
+                }
+            });
+
+            report += `Total data: ${window.allData.length}\n`;
+            report += `✅ Valid rows: ${validRows.length}\n`;
+            report += `❌ Empty/invalid rows: ${emptyRows.length}\n\n`;
+
+            if (emptyRows.length > 0) {
+                report += `DETAIL BARIS KOSONG/TIDAK VALID:\n\n`;
+                emptyRows.slice(0, 10).forEach(row => {
+                    report += `Row ${row.index + 1}:\n`;
+                    report += `  Nama: "${row.item.namaIstri || 'KOSONG'}"\n`;
+                    report += `  NIK: "${row.item.nikIstri || 'KOSONG'}"\n`;
+                    report += `  Alkon: "${row.item.jenisAlkon || 'KOSONG'}"\n`;
+                    report += `  Tanggal: "${row.item.tanggalPelayanan || 'KOSONG'}"\n`;
+                    
+                    const issues = [];
+                    if (row.issues.noName && row.issues.noNIK) issues.push('Tidak ada nama/NIK');
+                    if (row.issues.noAlkon) issues.push('Tidak ada alkon');
+                    if (row.issues.noDate) issues.push('Tidak ada tanggal');
+                    
+                    report += `  Issues: ${issues.join(', ')}\n\n`;
+                });
+
+                if (emptyRows.length > 10) {
+                    report += `... dan ${emptyRows.length - 10} baris kosong lainnya\n\n`;
+                }
+
+                report += `💡 REKOMENDASI:\n`;
+                report += `1. Gunakan "Quick Fix Data Loading" untuk filter otomatis\n`;
+                report += `2. Periksa data di Google Sheets untuk memastikan tidak ada baris kosong\n`;
+                report += `3. Pastikan semua kolom wajib terisi\n`;
+            } else {
+                report += `🎉 Tidak ada baris kosong ditemukan!\n`;
+            }
+
+            output.textContent = report;
+        }
+
+        // Fix functions
+        async function quickFixDataLoading() {
+            const output = document.getElementById('fixOutput');
+            output.style.display = 'block';
+            output.textContent = 'Running quick fix...\n';
+
+            try {
+                if (window.quickFixDataLoading) {
+                    await window.quickFixDataLoading();
+                    output.textContent += '✅ Quick fix completed successfully!\n';
+                    output.textContent += 'Data kosong telah dihapus dan data terbaru dimuat.\n';
+                } else {
+                    output.textContent = 'Error: quickFixDataLoading function not available';
+                }
+            } catch (error) {
+                output.textContent += `❌ Quick fix failed: ${error.message}\n`;
+            }
+        }
+
+        async function clearAllLocalData() {
+            const output = document.getElementById('fixOutput');
+            output.style.display = 'block';
+            
+            if (!confirm('Yakin ingin menghapus semua data lokal? Data di Google Sheets tidak akan terpengaruh.')) {
+                return;
+            }
+
+            output.textContent = 'Clearing all local data...\n';
+
+            try {
+                // Clear variables
+                window.allData = [];
+                window.filteredData = [];
+
+                // Clear localStorage
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('pwa_') || key.includes('data') || key.includes('cache')) {
+                        localStorage.removeItem(key);
+                        output.textContent += `Removed localStorage: ${key}\n`;
+                    }
+                });
+
+                // Clear IndexedDB if available
+                if (window.db) {
+                    const transaction = window.db.transaction(['laporan'], 'readwrite');
+                    const objectStore = transaction.objectStore('laporan');
+                    await new Promise((resolve, reject) => {
+                        const clearRequest = objectStore.clear();
+                        clearRequest.onsuccess = () => {
+                            output.textContent += 'IndexedDB cleared\n';
+                            resolve();
+                        };
+                        clearRequest.onerror = () => reject(clearRequest.error);
+                    });
+                }
+
+                output.textContent += '✅ All local data cleared successfully!\n';
+                output.textContent += 'Refresh halaman untuk memuat data baru dari Google Sheets.\n';
+            } catch (error) {
+                output.textContent += `❌ Error clearing data: ${error.message}\n`;
+            }
+        }
+
+        async function forceRefreshFromSheets() {
+            const output = document.getElementById('fixOutput');
+            output.style.display = 'block';
+            output.textContent = 'Force refreshing from Google Sheets...\n';
+
+            try {
+                // Clear current data
+                window.allData = [];
+                window.filteredData = [];
+
+                // Force load from sheets
+                if (window.loadData) {
+                    await window.loadData();
+                    output.textContent += '✅ Force refresh completed!\n';
+                    output.textContent += 'Data terbaru berhasil dimuat dari Google Sheets.\n';
+                } else {
+                    output.textContent = 'Error: loadData function not available';
+                }
+            } catch (error) {
+                output.textContent += `❌ Force refresh failed: ${error.message}\n`;
+            }
+        }
+
+        async function resetEverything() {
+            const output = document.getElementById('fixOutput');
+            output.style.display = 'block';
+            
+            if (!confirm('PERINGATAN: Ini akan reset semua data lokal dan cache. Lanjutkan?')) {
+                return;
+            }
+
+            output.textContent = 'Resetting everything...\n';
+
+            try {
+                // Clear all data
+                window.allData = [];
+                window.filteredData = [];
+
+                // Clear all localStorage
+                localStorage.clear();
+                output.textContent += 'localStorage cleared\n';
+
+                // Clear sessionStorage
+                sessionStorage.clear();
+                output.textContent += 'sessionStorage cleared\n';
+
+                // Reset IndexedDB
+                if (window.db) {
+                    window.db.close();
+                }
+
+                // Delete IndexedDB
+                await new Promise((resolve, reject) => {
+                    const deleteRequest = indexedDB.deleteDatabase('LaporanKBDB');
+                    deleteRequest.onsuccess = () => {
+                        output.textContent += 'IndexedDB deleted\n';
+                        resolve();
+                    };
+                    deleteRequest.onerror = () => reject(deleteRequest.error);
+                    deleteRequest.onblocked = () => {
+                        output.textContent += 'IndexedDB deletion blocked - close other tabs\n';
+                        resolve();
+                    };
+                });
+
+                output.textContent += '✅ Everything reset successfully!\n';
+                output.textContent += 'Halaman akan dimuat ulang dalam 3 detik...\n';
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+            } catch (error) {
+                output.textContent += `❌ Reset failed: ${error.message}\n`;
+            }
+        }
+
+        // Preview functions
+        async function previewCurrentData() {
+            const preview = document.getElementById('dataPreview');
+            preview.style.display = 'block';
+            preview.innerHTML = '<p>Loading current data preview...</p>';
+
+            try {
+                if (!window.allData || window.allData.length === 0) {
+                    preview.innerHTML = '<p>Tidak ada data untuk di-preview</p>';
+                    return;
+                }
+
+                let html = `<h4>Current Data Preview (${window.allData.length} items)</h4>`;
+                
+                window.allData.slice(0, 20).forEach((item, index) => {
+                    const hasName = item.namaIstri && item.namaIstri.trim() !== '' && item.namaIstri !== '-';
+                    const hasNIK = item.nikIstri && item.nikIstri.trim() !== '' && item.nikIstri !== '-';
+                    const hasAlkon = item.jenisAlkon && item.jenisAlkon.trim() !== '' && item.jenisAlkon !== '-';
+                    const hasDate = item.tanggalPelayanan && item.tanggalPelayanan !== 'No Date Found' && item.tanggalPelayanan !== '';
+
+                    const isValid = (hasName || hasNIK) && hasAlkon;
+                    const className = isValid ? 'valid-row' : 'empty-row';
+
+                    html += `<div class="data-item ${className}">`;
+                    html += `<strong>${index + 1}.</strong> `;
+                    html += `${item.namaIstri || 'NO NAME'} | `;
+                    html += `${item.nikIstri || 'NO NIK'} | `;
+                    html += `${item.jenisAlkon || 'NO ALKON'} | `;
+                    html += `${item.tanggalPelayanan || 'NO DATE'}`;
+                    html += `</div>`;
+                });
+
+                if (window.allData.length > 20) {
+                    html += `<p><em>... dan ${window.allData.length - 20} item lainnya</em></p>`;
+                }
+
+                preview.innerHTML = html;
+            } catch (error) {
+                preview.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        async function previewSheetsData() {
+            const preview = document.getElementById('dataPreview');
+            preview.style.display = 'block';
+            preview.innerHTML = '<p>Loading Google Sheets data preview...</p>';
+
+            try {
+                const result = await window.sheetsAPI.getAllData();
+                
+                if (!result || !result.success || !result.data) {
+                    preview.innerHTML = '<p>Error: Tidak bisa mengambil data dari Google Sheets</p>';
+                    return;
+                }
+
+                const rawData = result.data;
+                let html = `<h4>Google Sheets Data Preview (${rawData.length} items)</h4>`;
+                
+                rawData.slice(0, 20).forEach((item, index) => {
+                    html += `<div class="data-item">`;
+                    html += `<strong>${index + 1}.</strong> `;
+                    
+                    // Show key fields
+                    const namaIstri = item['Nama Istri'] || 'NO NAME';
+                    const nikIstri = item['NIK Istri'] || 'NO NIK';
+                    const jenisAlkon = item['Jenis Alkon MKJP & NON MKJP'] || item['Jenis Alkon'] || 'NO ALKON';
+                    const tanggalPelayanan = item['Tanggal Pelayanan'] || 'NO DATE';
+                    
+                    html += `${namaIstri} | ${nikIstri} | ${jenisAlkon} | ${tanggalPelayanan}`;
+                    html += `</div>`;
+                });
+
+                if (rawData.length > 20) {
+                    html += `<p><em>... dan ${rawData.length - 20} item lainnya</em></p>`;
+                }
+
+                preview.innerHTML = html;
+            } catch (error) {
+                preview.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Debug tool loaded');
+            checkAllStatus();
+        });
+    </script>
+</body>
+</html>
