@@ -40,6 +40,40 @@ http://192.168.x.x:8000/pwa-app/
 
 ---
 
+## 🔐 Autentikasi (Login)
+
+Login pada aplikasi demo ini menggunakan kredensial sederhana yang dapat dikonfigurasi secara lokal.
+
+- **Lokasi konfigurasi:** `js/config.js`
+- **Objek:** `CONFIG.AUTH`
+- **Properti:** `USERNAME` dan `PASSWORD`
+
+Contoh (`js/config.js`):
+
+```javascript
+AUTH: {
+   USERNAME: 'admin',
+   PASSWORD: 'admin123'
+}
+```
+
+Perubahan pada `CONFIG.AUTH` akan dipakai secara langsung pada halaman login setelah pengguna melakukan logout atau bila token sesi (localStorage `pwa_auth_token`) dianggap kadaluarsa.
+
+Jika Anda mengubah `AUTH.PASSWORD` (mis. dari `admin` ke `admin123`), pengguna yang sudah login sebelumnya tetap memiliki sesi aktif sampai salah satu tindakan berikut dilakukan:
+
+- Klik tombol **Logout** di aplikasi, atau
+- Hapus token di console browser:
+
+```javascript
+localStorage.removeItem('pwa_auth_token');
+localStorage.removeItem('pwa_username');
+location.reload();
+```
+
+Catatan keamanan: Kredensial tersimpan dalam file JavaScript plain-text hanya untuk demo. Untuk penggunaan produksi, gunakan autentikasi server-side, penyimpanan password ter-hash, atau layanan pihak ketiga seperti Firebase Auth.
+
+---
+
 ## 🔧 TROUBLESHOOTING KONEKSI
 
 ### ❌ Masalah: Data Tidak Tampil di Index.html
