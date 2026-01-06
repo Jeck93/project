@@ -26,7 +26,15 @@ window.deferredPrompt = null;
 
 // Check if logged in - use consistent auth system
 const authToken = localStorage.getItem('pwa_auth_token');
-if (!authToken) {
+// If a token exists but the stored username doesn't match the configured username, invalidate token
+const storedUsername = localStorage.getItem('pwa_username');
+const configuredUsername = (typeof CONFIG !== 'undefined' && CONFIG.AUTH && CONFIG.AUTH.USERNAME) ? CONFIG.AUTH.USERNAME : null;
+if (authToken && configuredUsername && storedUsername !== configuredUsername) {
+    console.log('Auth username mismatch with config - invalidating token');
+    localStorage.removeItem('pwa_auth_token');
+    localStorage.removeItem('pwa_username');
+    window.location.href = 'login.html';
+} else if (!authToken) {
     console.log('No auth token found, redirecting to login...');
     window.location.href = 'login.html';
 }

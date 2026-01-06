@@ -65,7 +65,17 @@ class AuthManager {
     checkExistingAuth() {
         const token = localStorage.getItem('pwa_auth_token');
         const currentPath = window.location.pathname;
-        
+        // If a token exists, but stored username doesn't match configured username, invalidate token
+        const storedUsername = localStorage.getItem('pwa_username');
+        const configuredUsername = (typeof CONFIG !== 'undefined' && CONFIG.AUTH && CONFIG.AUTH.USERNAME) ? CONFIG.AUTH.USERNAME : null;
+
+        if (token && configuredUsername && storedUsername !== configuredUsername) {
+            // invalidate stale token (e.g., after credential change)
+            localStorage.removeItem('pwa_auth_token');
+            localStorage.removeItem('pwa_username');
+            // continue to normal flow (user will see login)
+        }
+
         if (token && currentPath.includes('login.html')) {
             // User already logged in, redirect to main app
             window.location.href = 'index.html';
