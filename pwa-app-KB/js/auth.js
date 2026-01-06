@@ -31,8 +31,13 @@ class AuthManager {
         this.setLoadingState(loginBtn, true);
         
         try {
-            // Simple demo authentication
-            if (username === 'admin' && password === 'admin') {
+            // Simple demo authentication using configurable credentials
+            // Load configured credentials from `CONFIG.AUTH` if available
+            const authConfig = (typeof CONFIG !== 'undefined') ? CONFIG.AUTH : null;
+            const validUsername = authConfig && authConfig.USERNAME ? authConfig.USERNAME : 'admin';
+            const validPassword = authConfig && authConfig.PASSWORD ? authConfig.PASSWORD : 'admin';
+
+            if (username === validUsername && password === validPassword) {
                 // Store auth token
                 localStorage.setItem('pwa_auth_token', 'demo_token_' + Date.now());
                 localStorage.setItem('pwa_username', username);

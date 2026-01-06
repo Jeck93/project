@@ -15,6 +15,13 @@ const CONFIG = {
     
     // Debug mode
     DEBUG: true
+    ,
+    // Authentication demo credentials (not secure for production)
+    // Change these values to update the PWA demo login username/password
+    AUTH: {
+        USERNAME: 'admin',
+        PASSWORD: 'admin'
+    }
 };
 
 // Export config for use in other files
