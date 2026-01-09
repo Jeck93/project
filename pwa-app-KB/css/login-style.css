@@ -701,6 +701,29 @@ details p {
   font-size: 11px;
 }
 
+/* Security notice styling */
+.security-notice {
+  background: #e8f5e8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #c3e6cb;
+  text-align: center;
+}
+
+.security-notice p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #155724;
+  line-height: 1.4;
+}
+
+.security-notice small {
+  font-size: 11px;
+  color: #6c757d;
+  font-style: italic;
+}
+
 /* Responsive grid */
 @media (max-width: 480px) {
   .credentials-grid {
@@ -710,5 +733,9 @@ details p {
   
   .admin-creds, .desa-creds {
     padding: 8px;
+  }
+  
+  .security-notice {
+    padding: 12px;
   }
 }
