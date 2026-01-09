@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-app-v6'; // Updated version - removed ads
+const CACHE_NAME = 'pwa-app-v7-secure'; // Updated version - secure login only
 const urlsToCache = [
   './',
   './login.html',

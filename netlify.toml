@@ -4,6 +4,6 @@
 [context.production.environment]
   NODE_ENV = "production"
 
-# Enable Netlify Identity
+# Disable Netlify Identity - using custom secure authentication
 [template.environment]
-  NETLIFY_IDENTITY_ENABLED = "true"
+  NETLIFY_IDENTITY_ENABLED = "false"

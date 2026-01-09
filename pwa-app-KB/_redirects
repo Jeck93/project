@@ -1,3 +1,6 @@
+# Clear cache page
+/clear-cache  /clear-cache.html  200
+
 # Redirect root to login page
 /  /login.html  302
 
