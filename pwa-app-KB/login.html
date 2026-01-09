@@ -30,13 +30,45 @@
             </div>
 
             <h2>Silahkan Login</h2>
-            <div class="netlify-login-info">
-                <p>Aplikasi ini menggunakan Netlify Identity untuk autentikasi yang aman.</p>
-                <p>Klik tombol di bawah untuk login atau daftar akun baru.</p>
+            
+            <!-- Mode Selection -->
+            <div class="login-mode-selector">
+                <button type="button" id="netlifyModeBtn" class="mode-btn active">🌐 Netlify Identity</button>
+                <button type="button" id="localModeBtn" class="mode-btn">🔐 Local Login</button>
             </div>
-            <form id="loginForm">
-                <button type="submit" id="loginBtn">🔐 Login / Daftar</button>
-            </form>
+            
+            <!-- Netlify Identity Mode -->
+            <div id="netlifyMode" class="login-mode">
+                <div class="netlify-login-info">
+                    <p>Aplikasi ini menggunakan Netlify Identity untuk autentikasi yang aman.</p>
+                    <p>Klik tombol di bawah untuk login atau daftar akun baru.</p>
+                </div>
+                <form id="netlifyForm">
+                    <button type="submit" id="netlifyLoginBtn">🔐 Login / Daftar dengan Netlify</button>
+                </form>
+            </div>
+            
+            <!-- Local Mode -->
+            <div id="localMode" class="login-mode" style="display: none;">
+                <div class="local-login-info">
+                    <p>Login menggunakan akun lokal yang sudah dikonfigurasi.</p>
+                </div>
+                <form id="loginForm">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K" class="toggle-password" id="togglePassword" alt="toggle">
+                    </div>
+                    <button type="submit" id="loginBtn">Login</button>
+                </form>
+                
+                <div class="demo-credentials">
+                    <h4>Demo Credentials:</h4>
+                    <p><strong>admin</strong> / admin123</p>
+                    <p><strong>ppkbd</strong> / ppkbd2024</p>
+                    <p><strong>user1</strong> / user123</p>
+                </div>
+            </div>
 
             <div id="errorMsg" class="error-msg" style="display: none;"></div>
         </div>
@@ -52,6 +84,47 @@
     <script src="js/performance-optimized.js"></script>
     <script src="js/config.js"></script>
     <script src="js/netlify-auth.js"></script>
+    
+    <script>
+        // Mode switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const netlifyModeBtn = document.getElementById('netlifyModeBtn');
+            const localModeBtn = document.getElementById('localModeBtn');
+            const netlifyMode = document.getElementById('netlifyMode');
+            const localMode = document.getElementById('localMode');
+            const togglePassword = document.getElementById('togglePassword');
+            
+            // Mode switching
+            netlifyModeBtn.addEventListener('click', function() {
+                netlifyModeBtn.classList.add('active');
+                localModeBtn.classList.remove('active');
+                netlifyMode.style.display = 'block';
+                localMode.style.display = 'none';
+            });
+            
+            localModeBtn.addEventListener('click', function() {
+                localModeBtn.classList.add('active');
+                netlifyModeBtn.classList.remove('active');
+                localMode.style.display = 'block';
+                netlifyMode.style.display = 'none';
+            });
+            
+            // Toggle password visibility
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const passwordInput = document.getElementById('password');
+                    
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K';
+                    } else {
+                        passwordInput.type = 'password';
+                        togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBkPSJNMyAzTDIxIDIxIiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+                    }
+                });
+            }
+        });
+    </script>
     
     <!-- PWA Service Worker Registration -->
     <script>

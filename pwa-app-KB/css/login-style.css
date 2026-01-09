@@ -346,3 +346,109 @@ body.netlify-identity-open {
   font-size: 14px;
   border: 1px solid #c3e6cb;
 }
+/* =========================================
+   DUAL MODE LOGIN STYLES
+========================================= */
+.login-mode-selector {
+  display: flex;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  color: #666;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin: 0;
+  border-radius: 0;
+}
+
+.mode-btn:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.mode-btn.active {
+  background: #2563eb;
+  color: white;
+}
+
+.mode-btn.active:hover {
+  background: #1d4ed8;
+}
+
+.login-mode {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Local login info */
+.local-login-info {
+  background: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #ffeaa7;
+}
+
+.local-login-info p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Demo credentials */
+.demo-credentials {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #e9ecef;
+}
+
+.demo-credentials h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.demo-credentials p {
+  margin: 5px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #6c757d;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .mode-btn {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  
+  .demo-credentials {
+    padding: 12px;
+  }
+  
+  .demo-credentials p {
+    font-size: 12px;
+  }
+}

@@ -20,7 +20,38 @@ const CONFIG = {
     // Change these values to update the PWA demo login username/password
     AUTH: {
         USERNAME: 'admin',
-        PASSWORD: 'admin123'
+        PASSWORD: 'admin123',
+        // Multiple users configuration
+        USERS: [
+            { 
+                username: 'admin', 
+                password: 'admin123', 
+                name: 'Administrator',
+                email: 'admin@ppkbd.local',
+                role: 'admin'
+            },
+            { 
+                username: 'ppkbd', 
+                password: 'ppkbd2024', 
+                name: 'PPKBD Staff',
+                email: 'ppkbd@kemendukbangga.go.id',
+                role: 'staff'
+            },
+            { 
+                username: 'user1', 
+                password: 'user123', 
+                name: 'User Demo',
+                email: 'user1@demo.local',
+                role: 'user'
+            },
+            { 
+                username: 'kecamatan', 
+                password: 'kec2024', 
+                name: 'Petugas Kecamatan',
+                email: 'kecamatan@ulujami.go.id',
+                role: 'operator'
+            }
+        ]
     }
 };
 
