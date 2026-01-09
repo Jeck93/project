@@ -431,10 +431,16 @@ window.timestampUtils = {
 // Auto-fix timestamp jika terdeteksi masalah saat load
 document.addEventListener('DOMContentLoaded', function() {
     const now = new Date();
-    if (now.getFullYear() > 2025) {
-        console.warn('⚠️ System date appears to be incorrect:', now.toISOString());
+    const currentYear = now.getFullYear();
+    
+    // Update: Allow years 2024-2030 as valid range
+    if (currentYear < 2024 || currentYear > 2030) {
+        console.warn('⚠️ System date appears to be outside expected range:', now.toISOString());
+        console.log('💡 Expected year range: 2024-2030, current:', currentYear);
         console.log('💡 Use timestampUtils.debugTimestamp() for more info');
         console.log('💡 Use timestampUtils.getCurrentTimestamp() for correct timestamp');
+    } else {
+        console.log('✅ System date is within expected range:', now.toISOString());
     }
     
     // Auto-set tanggal pelayanan ke tanggal yang benar jika ada input date

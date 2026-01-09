@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-app-v7-secure'; // Updated version - secure login only
+const CACHE_NAME = 'pwa-app-v8-fixed'; // Updated version - fixed CSP and timestamp errors
 const urlsToCache = [
   './',
   './login.html',

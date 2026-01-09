@@ -1,8 +1,9 @@
-# Disable Netlify Identity
+# Disable Netlify Identity and Security Headers
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: frame-ancestors 'self'
   
 # Block Netlify Identity scripts
 /netlify-identity-widget.js
