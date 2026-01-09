@@ -19,6 +19,17 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiM0Q0FGNTAIIHJ4PSI2NCIvPjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMzEyIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48cmVjdCB4PSIxMDAiIHk9IjE4MCIgd2lkdGg9IjMxMiIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHJ4PSI4Ii8+PHJlY3QgeD0iMTAwIiB5PSIyNjAiIHdpZHRoPSIzMTIiIGhlaWdodD0iNDAiIGZpbGw9IndoaXRlIiByeD0iOCIvPjxyZWN0IHg9IjEwMCIgeT0iMzQwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzNjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjM1MCIgeT0iMzc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNENBRjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inJM8L3RleHQ+PC9zdmc+">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiM0Q0FGNTAIIHJ4PSI2NCIvPjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMzEyIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48cmVjdCB4PSIxMDAiIHk9IjE4MCIgd2lkdGg9IjMxMiIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHJ4PSI4Ii8+PHJlY3QgeD0iMTAwIiB5PSIyNjAiIHdpZHRoPSIzMTIiIGhlaWdodD0iNDAiIGZpbGw9IndoaXRlIiByeD0iOCIvPjxyZWN0IHg9IjEwMCIgeT0iMzQwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjQwIiBmaWxsPSJ3aGl0ZSIgcng9IjgiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzNjAiIHI9IjMwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjM1MCIgeT0iMzc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNENBRjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inJM8L3RleHQ+PC9zdmc+">
     
+    <!-- Block Netlify Identity -->
+    <script>
+        // Block Netlify Identity immediately
+        window.netlifyIdentity = null;
+        Object.defineProperty(window, 'netlifyIdentity', {
+            get: () => null,
+            set: () => null,
+            configurable: false
+        });
+    </script>
+    
     <link rel="stylesheet" href="css/performance-optimized.css">
 </head>
 <body>
@@ -114,6 +125,7 @@
         </main>
     </div>
 
+    <script src="js/disable-netlify-identity.js"></script>
     <script src="js/timestamp-utils.js"></script>
     <script src="js/config.js"></script>
     <script src="js/connection-recovery.js"></script>

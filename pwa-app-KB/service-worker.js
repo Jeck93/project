@@ -50,9 +50,18 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - serve from cache, block Netlify Identity
 self.addEventListener('fetch', event => {
   const url = event.request.url;
+  
+  // Block Netlify Identity requests
+  if (url.includes('netlify-identity') || 
+      url.includes('gotrue') ||
+      url.includes('identity.netlify.com')) {
+    console.log('🚫 Blocked Netlify Identity request:', url);
+    event.respondWith(new Response('', { status: 204 }));
+    return;
+  }
   
   // Skip CSP reporting URLs and Google-specific URLs that cause issues
   if (url.includes('csp.withgoogle.com') || 
