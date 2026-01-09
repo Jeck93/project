@@ -1,5 +1,5 @@
 [build]
-  publish = "."
+  publish = "pwa-app-KB"
 
 [[redirects]]
   from = "/*"
