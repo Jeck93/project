@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Functions - PWA KB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online { background: #28a745; }
+        .status-offline { background: #6c757d; }
+        .status-error { background: #dc3545; }
+        .status-checking { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Functions - PWA KB</h1>
+    
+    <div class="test-container">
+        <h2>📡 Connection Status Test</h2>
+        <div id="connectionStatus" class="connection-status">
+            <span id="connectionIndicator">🔄</span>
+            <span id="connectionText">Checking...</span>
+        </div>
+        <div id="dataSource" class="data-source">📱 Data Lokal</div>
+        <br><br>
+        <button onclick="testConnectionStatus()">Test Connection Status</button>
+        <button onclick="testDataSource()">Test Data Source</button>
+        <div id="connectionTestResult"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>🔧 Function Availability Test</h2>
+        <button onclick="testFunctionAvailability()">Test All Functions</button>
+        <div id="functionTestResult"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>📊 Performance Test</h2>
+        <button onclick="testPerformance()">Test Performance</button>
+        <button onclick="testDataProcessing()">Test Data Processing</button>
+        <div id="performanceTestResult"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>💾 Database Test</h2>
+        <button onclick="testDatabase()">Test IndexedDB</button>
+        <button onclick="testDataSave()">Test Data Save</button>
+        <div id="databaseTestResult"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>🌐 Google Sheets Test</h2>
+        <button onclick="testGoogleSheets()">Test Google Sheets Connection</button>
+        <div id="sheetsTestResult"></div>
+    </div>
+
+    <!-- Load all required scripts -->
+    <script src="js/disable-netlify-identity.js"></script>
+    <script src="js/timestamp-utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/connection-recovery.js"></script>
+    <script src="js/sheets-api.js"></script>
+    <script src="js/theme-toggle-optimized.js"></script>
+    <script src="js/performance-optimized.js"></script>
+    <script src="js/secure-auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/connection-status-fix.js"></script>
+    <script src="js/performance-fix.js"></script>
+    <script src="js/fix-data-loading.js"></script>
+
+    <script>
+        // Test functions
+        function testConnectionStatus() {
+            const resultDiv = document.getElementById('connectionTestResult');
+            let results = [];
+            
+            try {
+                // Test different status types
+                updateConnectionStatus('checking', 'Testing checking status...');
+                results.push('✅ updateConnectionStatus(checking) - OK');
+                
+                setTimeout(() => {
+                    updateConnectionStatus('online', 'Testing online status...');
+                    results.push('✅ updateConnectionStatus(online) - OK');
+                }, 1000);
+                
+                setTimeout(() => {
+                    updateConnectionStatus('offline', 'Testing offline status...');
+                    results.push('✅ updateConnectionStatus(offline) - OK');
+                }, 2000);
+                
+                setTimeout(() => {
+                    updateConnectionStatus('error', 'Testing error status...');
+                    results.push('✅ updateConnectionStatus(error) - OK');
+                }, 3000);
+                
+                setTimeout(() => {
+                    resultDiv.innerHTML = results.map(r => `<div class="test-result success">${r}</div>`).join('');
+                }, 4000);
+                
+            } catch (error) {
+                results.push(`❌ updateConnectionStatus failed: ${error.message}`);
+                resultDiv.innerHTML = `<div class="test-result error">${results[results.length - 1]}</div>`;
+            }
+        }
+        
+        function testDataSource() {
+            const resultDiv = document.getElementById('connectionTestResult');
+            let results = [];
+            
+            try {
+                updateDataSource('sheets', 150);
+                results.push('✅ updateDataSource(sheets) - OK');
+                
+                setTimeout(() => {
+                    updateDataSource('local', 75);
+                    results.push('✅ updateDataSource(local) - OK');
+                }, 1000);
+                
+                setTimeout(() => {
+                    updateDataSource('error', 0);
+                    results.push('✅ updateDataSource(error) - OK');
+                }, 2000);
+                
+                setTimeout(() => {
+                    resultDiv.innerHTML = results.map(r => `<div class="test-result success">${r}</div>`).join('');
+                }, 3000);
+                
+            } catch (error) {
+                results.push(`❌ updateDataSource failed: ${error.message}`);
+                resultDiv.innerHTML = `<div class="test-result error">${results[results.length - 1]}</div>`;
+            }
+        }
+        
+        function testFunctionAvailability() {
+            const resultDiv = document.getElementById('functionTestResult');
+            const requiredFunctions = [
+                'updateConnectionStatus',
+                'updateDataSource',
+                'updateDataDisplay',
+                'updateSummary',
+                'formatDate',
+                'retryConnection',
+                'saveDataToIndexedDB',
+                'loadData',
+                'debugPerformance',
+                'debugCurrentData',
+                'quickFixDataLoading'
+            ];
+            
+            let results = [];
+            
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    results.push(`<div class="test-result success">✅ ${funcName} - Available</div>`);
+                } else {
+                    results.push(`<div class="test-result error">❌ ${funcName} - Missing</div>`);
+                }
+            });
+            
+            resultDiv.innerHTML = results.join('');
+        }
+        
+        function testPerformance() {
+            const resultDiv = document.getElementById('performanceTestResult');
+            
+            try {
+                if (typeof debugPerformance === 'function') {
+                    const report = debugPerformance();
+                    resultDiv.innerHTML = `
+                        <div class="test-result success">✅ Performance monitoring available</div>
+                        <div class="test-result success">📊 Total time: ${report.totalTime || 0}ms</div>
+                        <div class="test-result success">📝 Steps: ${report.steps?.length || 0}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result error">❌ debugPerformance not available</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result error">❌ Performance test failed: ${error.message}</div>`;
+            }
+        }
+        
+        function testDataProcessing() {
+            const resultDiv = document.getElementById('performanceTestResult');
+            
+            try {
+                // Test data processing with sample data
+                const sampleData = [
+                    { namaIstri: 'Test 1', nikIstri: '1234567890', jenisAlkon: 'Pil KB' },
+                    { namaIstri: 'Test 2', nikIstri: '0987654321', jenisAlkon: 'IUD' },
+                    { namaIstri: '', nikIstri: '', jenisAlkon: '' }, // Empty data
+                ];
+                
+                // Test data filtering
+                const validData = sampleData.filter(item => {
+                    const hasName = item.namaIstri && item.namaIstri.trim() !== '';
+                    const hasNIK = item.nikIstri && item.nikIstri.trim() !== '';
+                    const hasAlkon = item.jenisAlkon && item.jenisAlkon.trim() !== '';
+                    return (hasName || hasNIK) && hasAlkon;
+                });
+                
+                resultDiv.innerHTML = `
+                    <div class="test-result success">✅ Data processing test completed</div>
+                    <div class="test-result success">📊 Sample data: ${sampleData.length} records</div>
+                    <div class="test-result success">✅ Valid data: ${validData.length} records</div>
+                    <div class="test-result success">🗑️ Filtered out: ${sampleData.length - validData.length} empty records</div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result error">❌ Data processing test failed: ${error.message}</div>`;
+            }
+        }
+        
+        function testDatabase() {
+            const resultDiv = document.getElementById('databaseTestResult');
+            
+            try {
+                if (typeof db !== 'undefined' && db) {
+                    resultDiv.innerHTML = `
+                        <div class="test-result success">✅ IndexedDB available</div>
+                        <div class="test-result success">📊 Database name: ${db.name}</div>
+                        <div class="test-result success">🔢 Version: ${db.version}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result warning">⚠️ IndexedDB not initialized yet</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result error">❌ Database test failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function testDataSave() {
+            const resultDiv = document.getElementById('databaseTestResult');
+            
+            try {
+                const testData = [
+                    {
+                        id: 'test-' + Date.now(),
+                        namaIstri: 'Test User',
+                        nikIstri: '1234567890123456',
+                        jenisAlkon: 'Test Alkon',
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                
+                if (typeof saveDataToIndexedDB === 'function') {
+                    const result = await saveDataToIndexedDB(testData);
+                    
+                    if (result.success) {
+                        resultDiv.innerHTML = `
+                            <div class="test-result success">✅ Data save test successful</div>
+                            <div class="test-result success">💾 Saved: ${result.savedCount}/${result.totalCount} records</div>
+                            <div class="test-result success">❌ Errors: ${result.errorCount}</div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<div class="test-result error">❌ Data save failed: ${result.error}</div>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result error">❌ saveDataToIndexedDB function not available</div>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result error">❌ Data save test failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function testGoogleSheets() {
+            const resultDiv = document.getElementById('sheetsTestResult');
+            
+            try {
+                if (typeof window.sheetsAPI !== 'undefined' && window.sheetsAPI) {
+                    resultDiv.innerHTML = '<div class="test-result warning">🔄 Testing Google Sheets connection...</div>';
+                    
+                    // Test connection
+                    const result = await window.sheetsAPI.testConnectionJSONP();
+                    
+                    if (result.success) {
+                        resultDiv.innerHTML = `
+                            <div class="test-result success">✅ Google Sheets connection successful</div>
+                            <div class="test-result success">🌐 URL: ${window.sheetsAPI.baseUrl}</div>
+                            <div class="test-result success">📊 Response: ${JSON.stringify(result.data).substring(0, 100)}...</div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<div class="test-result error">❌ Google Sheets connection failed: ${result.error}</div>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result error">❌ Google Sheets API not available</div>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result error">❌ Google Sheets test failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Auto-run function availability test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testFunctionAvailability();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

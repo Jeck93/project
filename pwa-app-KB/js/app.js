@@ -104,13 +104,25 @@ async function initializeDatabase() {
         request.onerror = () => {
             console.error('Database error:', request.error);
             // Try to continue without database
-            loadData();
+            setTimeout(() => {
+                if (typeof window.loadData === 'function') {
+                    window.loadData();
+                } else {
+                    loadDataOriginal();
+                }
+            }, 100);
         };
         
         request.onsuccess = (event) => {
             db = event.target.result;
             console.log('✅ Database opened successfully');
-            loadData();
+            setTimeout(() => {
+                if (typeof window.loadData === 'function') {
+                    window.loadData();
+                } else {
+                    loadDataOriginal();
+                }
+            }, 100);
         };
         
         request.onupgradeneeded = (event) => {
@@ -141,12 +153,18 @@ async function initializeDatabase() {
     } catch (error) {
         console.error('❌ Database initialization error:', error);
         // Continue without database
-        loadData();
+        setTimeout(() => {
+            if (typeof window.loadData === 'function') {
+                window.loadData();
+            } else {
+                loadDataOriginal();
+            }
+        }, 100);
     }
 }
 
-// Load data from IndexedDB
-async function loadData() {
+// Load data from IndexedDB - Original function (will be overridden by optimized version)
+async function loadDataOriginal() {
     if (!db) {
         console.log('Database not available, loading from localStorage...');
         loadFromLocalStorage();
@@ -180,9 +198,15 @@ async function loadData() {
         };
         
     } catch (error) {
-        console.error('❌ Error in loadData:', error);
+        console.error('❌ Error in loadDataOriginal:', error);
         loadFromLocalStorage();
     }
+}
+
+// Placeholder loadData function - will be overridden by optimized version
+async function loadData() {
+    console.log('📝 Using placeholder loadData - will be overridden by performance-fix.js');
+    return loadDataOriginal();
 }
 
 // Fallback to localStorage
