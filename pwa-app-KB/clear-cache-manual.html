@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - PWA App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .success {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Cache PWA App</h1>
+        <p>Gunakan halaman ini untuk membersihkan cache browser dan melihat perubahan terbaru.</p>
+        
+        <div class="info">
+            <strong>Langkah-langkah:</strong><br>
+            1. Klik tombol "Clear All Cache" di bawah<br>
+            2. Tunggu hingga muncul pesan sukses<br>
+            3. Kembali ke halaman login dan refresh (F5)
+        </div>
+
+        <button onclick="clearAllCache()">🗑️ Clear All Cache</button>
+        <button onclick="unregisterServiceWorker()">🔄 Unregister Service Worker</button>
+        <button onclick="clearBrowserCache()">🌐 Clear Browser Cache</button>
+        <button onclick="goToLogin()">🔐 Go to Login</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function clearAllCache() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Membersihkan cache...</p>';
+
+            try {
+                // Clear all caches
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => {
+                        console.log('Deleting cache:', cacheName);
+                        return caches.delete(cacheName);
+                    })
+                );
+
+                // Unregister service worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(
+                        registrations.map(registration => {
+                            console.log('Unregistering service worker');
+                            return registration.unregister();
+                        })
+                    );
+                }
+
+                result.innerHTML = `
+                    <div class="success">
+                        ✅ Cache berhasil dibersihkan!<br>
+                        - ${cacheNames.length} cache dihapus<br>
+                        - Service worker di-unregister<br><br>
+                        <strong>Sekarang refresh halaman login dengan Ctrl+F5</strong>
+                    </div>
+                `;
+
+            } catch (error) {
+                result.innerHTML = `<div style="background: #f44336; color: white; padding: 15px; border-radius: 8px;">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function unregisterServiceWorker() {
+            const result = document.getElementById('result');
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(
+                        registrations.map(registration => registration.unregister())
+                    );
+                    result.innerHTML = '<div class="success">✅ Service Worker berhasil di-unregister!</div>';
+                } else {
+                    result.innerHTML = '<div class="info">ℹ️ Service Worker tidak didukung browser ini.</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div style="background: #f44336; color: white; padding: 15px; border-radius: 8px;">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function clearBrowserCache() {
+            const result = document.getElementById('result');
+            result.innerHTML = `
+                <div class="info">
+                    <strong>Untuk clear browser cache manual:</strong><br>
+                    1. Tekan <kbd>Ctrl + Shift + Delete</kbd><br>
+                    2. Pilih "Cached images and files"<br>
+                    3. Klik "Clear data"<br><br>
+                    <strong>Atau gunakan:</strong><br>
+                    - Chrome: F12 → Network tab → Disable cache<br>
+                    - Firefox: F12 → Settings → Disable cache
+                </div>
+            `;
+        }
+
+        function goToLogin() {
+            window.location.href = './login.html';
+        }
+
+        // Auto-clear on page load
+        window.addEventListener('load', () => {
+            console.log('Cache cleaner loaded');
+        });
+    </script>
+</body>
+</html>

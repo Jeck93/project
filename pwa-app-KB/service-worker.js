@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-app-v8-fixed'; // Updated version - fixed CSP and timestamp errors
+const CACHE_NAME = 'pwa-app-v9-updated'; // Updated version - removed duplicate text
 const urlsToCache = [
   './',
   './login.html',
