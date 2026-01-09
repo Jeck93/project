@@ -112,24 +112,32 @@ class NetlifyAuthManager {
     }
     
     checkExistingAuth() {
-        const currentUser = netlifyIdentity.currentUser();
-        const currentPath = window.location.pathname;
-        
-        if (currentUser && currentPath.includes('login.html')) {
-            // User already logged in, redirect to main app
-            window.location.href = 'index.html';
-        } else if (!currentUser && currentPath.includes('index.html')) {
-            // User not logged in, redirect to login
-            window.location.href = 'login.html';
-        }
-        
-        // Update username display if user is logged in and on main page
-        if (currentUser && currentPath.includes('index.html')) {
-            const usernameElement = document.getElementById('username');
-            if (usernameElement) {
-                usernameElement.textContent = currentUser.user_metadata.full_name || currentUser.email;
+        // Wait for Netlify Identity to fully initialize
+        setTimeout(() => {
+            const currentUser = netlifyIdentity.currentUser();
+            const currentPath = window.location.pathname;
+            
+            console.log('Checking auth - Current user:', currentUser);
+            console.log('Current path:', currentPath);
+            
+            if (currentUser && (currentPath.includes('login.html') || currentPath === '/')) {
+                // User already logged in, redirect to main app
+                console.log('User logged in, redirecting to index.html');
+                window.location.href = 'index.html';
+            } else if (!currentUser && (currentPath.includes('index.html') || currentPath === '/')) {
+                // User not logged in, redirect to login
+                console.log('User not logged in, redirecting to login.html');
+                window.location.href = 'login.html';
             }
-        }
+            
+            // Update username display if user is logged in and on main page
+            if (currentUser && currentPath.includes('index.html')) {
+                const usernameElement = document.getElementById('username');
+                if (usernameElement) {
+                    usernameElement.textContent = currentUser.user_metadata.full_name || currentUser.email;
+                }
+            }
+        }, 500); // Give Netlify Identity time to initialize
     }
     
     logout() {

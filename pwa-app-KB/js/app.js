@@ -24,37 +24,87 @@ if ('serviceWorker' in navigator) {
 // Initialize PWA install prompt variable globally
 window.deferredPrompt = null;
 
-// Check if logged in - use consistent auth system
-const authToken = localStorage.getItem('pwa_auth_token');
-// If a token exists but the stored username doesn't match the configured username, invalidate token
-const storedUsername = localStorage.getItem('pwa_username');
-const configuredUsername = (typeof CONFIG !== 'undefined' && CONFIG.AUTH && CONFIG.AUTH.USERNAME) ? CONFIG.AUTH.USERNAME : null;
-if (authToken && configuredUsername && storedUsername !== configuredUsername) {
-    console.log('Auth username mismatch with config - invalidating token');
-    localStorage.removeItem('pwa_auth_token');
-    localStorage.removeItem('pwa_username');
-    window.location.href = 'login.html';
-} else if (!authToken) {
-    console.log('No auth token found, redirecting to login...');
-    window.location.href = 'login.html';
+// Check authentication - prioritize Netlify Identity
+function checkAuthentication() {
+    // Wait for Netlify Identity to initialize
+    if (typeof netlifyIdentity !== 'undefined') {
+        const currentUser = netlifyIdentity.currentUser();
+        if (currentUser) {
+            console.log('User authenticated via Netlify Identity:', currentUser.email);
+            return true;
+        }
+    }
+    
+    // Fallback to localStorage token (legacy system)
+    const authToken = localStorage.getItem('pwa_auth_token');
+    if (authToken) {
+        console.log('User authenticated via localStorage token');
+        return true;
+    }
+    
+    console.log('No authentication found, redirecting to login...');
+    return false;
+}
+
+// Only redirect if we're on index.html and not authenticated
+if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+    // Wait a bit for Netlify Identity to initialize
+    setTimeout(() => {
+        if (!checkAuthentication()) {
+            window.location.href = 'login.html';
+        }
+    }, 1000);
 }
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Display username - use consistent auth system
-    const username = localStorage.getItem('pwa_username');
-    const usernameElement = document.getElementById('username');
-    if (usernameElement) {
-        usernameElement.textContent = username || 'User';
+    // Display username - prioritize Netlify Identity
+    function updateUsername() {
+        const usernameElement = document.getElementById('username');
+        if (usernameElement) {
+            let username = 'User';
+            
+            // Try Netlify Identity first
+            if (typeof netlifyIdentity !== 'undefined') {
+                const currentUser = netlifyIdentity.currentUser();
+                if (currentUser) {
+                    username = currentUser.user_metadata.full_name || currentUser.email;
+                }
+            }
+            
+            // Fallback to localStorage
+            if (username === 'User') {
+                username = localStorage.getItem('pwa_username') || 'User';
+            }
+            
+            usernameElement.textContent = username;
+        }
+    }
+    
+    // Update username immediately and after Netlify Identity loads
+    updateUsername();
+    
+    // Listen for Netlify Identity events
+    if (typeof netlifyIdentity !== 'undefined') {
+        netlifyIdentity.on('login', updateUsername);
+        netlifyIdentity.on('logout', () => {
+            window.location.href = 'login.html';
+        });
     }
 
-    // Logout handler - use consistent auth system
+    // Logout handler - handle both auth systems
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('pwa_auth_token');
-            localStorage.removeItem('pwa_username');
-            window.location.href = 'login.html';
+            // Logout from Netlify Identity if available
+            if (typeof netlifyIdentity !== 'undefined' && netlifyIdentity.currentUser()) {
+                netlifyIdentity.logout();
+            } else {
+                // Fallback to localStorage cleanup
+                localStorage.removeItem('pwa_auth_token');
+                localStorage.removeItem('pwa_username');
+                window.location.href = 'login.html';
+            }
         });
     }
 });

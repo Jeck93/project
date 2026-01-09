@@ -114,8 +114,11 @@
         </main>
     </div>
 
-    <!-- Netlify Identity Widget -->
+    <!-- Netlify Identity Widget - Load early -->
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <!-- Initialize authentication first -->
+    <script src="js/init.js"></script>
     
     <script src="js/timestamp-utils.js"></script>
     <script src="js/config.js"></script>
