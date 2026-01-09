@@ -19,13 +19,10 @@
     
     <!-- Block Netlify Identity -->
     <script>
-        // Block Netlify Identity immediately
-        window.netlifyIdentity = null;
-        Object.defineProperty(window, 'netlifyIdentity', {
-            get: () => null,
-            set: () => null,
-            configurable: false
-        });
+        // Simple block - detailed blocking handled by disable-netlify-identity.js
+        if (typeof window.netlifyIdentity === 'undefined') {
+            window.netlifyIdentity = null;
+        }
     </script>
     
     <link rel="stylesheet" href="css/login-style.css">

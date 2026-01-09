@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-app-v9-updated'; // Updated version - removed duplicate text
+const CACHE_NAME = 'pwa-app-v10-fixed-errors'; // Updated version - fixed service worker and netlify errors
 const urlsToCache = [
   './',
   './login.html',
@@ -59,7 +59,10 @@ self.addEventListener('fetch', event => {
       url.includes('gotrue') ||
       url.includes('identity.netlify.com')) {
     console.log('🚫 Blocked Netlify Identity request:', url);
-    event.respondWith(new Response('', { status: 204 }));
+    event.respondWith(new Response(null, { 
+      status: 204,
+      statusText: 'No Content'
+    }));
     return;
   }
   

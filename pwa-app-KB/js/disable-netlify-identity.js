@@ -11,17 +11,33 @@
     }
     
     // Prevent Netlify Identity from being loaded
-    Object.defineProperty(window, 'netlifyIdentity', {
-        get: function() {
-            console.log('🚫 Netlify Identity access blocked');
-            return null;
-        },
-        set: function(value) {
-            console.log('🚫 Netlify Identity assignment blocked');
-            return null;
-        },
-        configurable: false
-    });
+    try {
+        // Check if property already exists and is configurable
+        const descriptor = Object.getOwnPropertyDescriptor(window, 'netlifyIdentity');
+        if (!descriptor || descriptor.configurable !== false) {
+            Object.defineProperty(window, 'netlifyIdentity', {
+                get: function() {
+                    console.log('🚫 Netlify Identity access blocked');
+                    return null;
+                },
+                set: function(value) {
+                    console.log('🚫 Netlify Identity assignment blocked');
+                    return null;
+                },
+                configurable: false
+            });
+        } else {
+            console.log('ℹ️ Netlify Identity property already locked');
+        }
+    } catch (error) {
+        console.log('ℹ️ Netlify Identity property already defined:', error.message);
+        // Property already exists and is non-configurable, just set to null
+        try {
+            window.netlifyIdentity = null;
+        } catch (e) {
+            console.log('ℹ️ Cannot override netlifyIdentity, already protected');
+        }
+    }
     
     // Block Netlify Identity script loading
     const originalCreateElement = document.createElement;
