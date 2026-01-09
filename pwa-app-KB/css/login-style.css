@@ -287,3 +287,62 @@ a:focus {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================
+   NETLIFY IDENTITY SPECIFIC STYLES
+========================================= */
+.netlify-login-info {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #bbdefb;
+}
+
+.netlify-login-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.netlify-login-info p:first-child {
+  font-weight: 500;
+}
+
+/* Override button for Netlify Identity */
+#loginBtn {
+  background: #1976d2;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px;
+  margin-top: 15px;
+}
+
+#loginBtn:hover {
+  background: #1565c0;
+}
+
+/* Netlify Identity Widget customization */
+.netlify-identity-widget {
+  --accent-color: #2563eb;
+  --border-radius: 8px;
+}
+
+/* Custom styling for when Netlify Identity modal is open */
+body.netlify-identity-open {
+  overflow: hidden;
+}
+
+/* Success message styling */
+.success-msg {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #c3e6cb;
+}
