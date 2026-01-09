@@ -33,14 +33,15 @@
             
             <!-- Mode Selection -->
             <div class="login-mode-selector">
-                <button type="button" id="netlifyModeBtn" class="mode-btn active">🌐 Netlify Identity</button>
-                <button type="button" id="localModeBtn" class="mode-btn">🔐 Local Login</button>
+                <button type="button" id="netlifyModeBtn" class="mode-btn">🌐 Netlify</button>
+                <button type="button" id="secureLocalBtn" class="mode-btn active">🔒 Secure Local</button>
+                <button type="button" id="localModeBtn" class="mode-btn">⚠️ Basic Local</button>
             </div>
             
             <!-- Netlify Identity Mode -->
-            <div id="netlifyMode" class="login-mode">
+            <div id="netlifyMode" class="login-mode" style="display: none;">
                 <div class="netlify-login-info">
-                    <p>Aplikasi ini menggunakan Netlify Identity untuk autentikasi yang aman.</p>
+                    <p>🛡️ Autentikasi paling aman dengan Netlify Identity.</p>
                     <p>Klik tombol di bawah untuk login atau daftar akun baru.</p>
                 </div>
                 <form id="netlifyForm">
@@ -48,10 +49,63 @@
                 </form>
             </div>
             
-            <!-- Local Mode -->
+            <!-- Secure Local Mode -->
+            <div id="secureLocalMode" class="login-mode">
+                <div class="secure-login-info">
+                    <p>🔒 Login aman dengan password ter-hash dan session timeout.</p>
+                    <p>Lebih aman dari basic local authentication.</p>
+                </div>
+                <form id="secureLoginForm">
+                    <input type="text" id="secureUsername" name="username" placeholder="Username" required>
+                    <div class="password-container">
+                        <input type="password" id="securePassword" name="password" placeholder="Password" required>
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K" class="toggle-password" id="secureTogglePassword" alt="toggle">
+                    </div>
+                    <button type="submit" id="secureLoginBtn">🔒 Login Aman</button>
+                </form>
+                
+                <div class="secure-credentials">
+                    <h4>🔒 Secure Demo Credentials:</h4>
+                    <div class="credentials-grid">
+                        <div class="admin-creds">
+                            <h5>👑 Admin:</h5>
+                            <p><strong>admin</strong> / admin123</p>
+                            <p><strong>ppkbd</strong> / ppkbd2024</p>
+                        </div>
+                        <div class="desa-creds">
+                            <h5>🏘️ Petugas Desa (contoh):</h5>
+                            <p><strong>cholilah</strong> / laporan123 (Sukorejo)</p>
+                            <p><strong>harwati</strong> / laporan123 (Botekan)</p>
+                            <p><strong>friska</strong> / laporan123 (Rowosari)</p>
+                            <p><strong>sugiarti</strong> / laporan123 (Ambowetan)</p>
+                            <details>
+                                <summary>Lihat semua petugas desa...</summary>
+                                <p><strong>kiswati</strong> / laporan123 (Pagergunung)</p>
+                                <p><strong>nuraini</strong> / laporan123 (Wiyorowetan)</p>
+                                <p><strong>umirohwati</strong> / laporan123 (Samong)</p>
+                                <p><strong>masrurotun</strong> / laporan123 (Tasikrejo)</p>
+                                <p><strong>suwati</strong> / laporan123 (Bumirejo)</p>
+                                <p><strong>turikhah</strong> / laporan123 (Kaliprau)</p>
+                                <p><strong>fathanah</strong> / laporan123 (Kertosari)</p>
+                                <p><strong>turahati</strong> / laporan123 (Pamutih)</p>
+                                <p><strong>tunirah</strong> / laporan123 (Padek)</p>
+                                <p><strong>isrowiyah</strong> / laporan123 (Blendung)</p>
+                                <p><strong>nurul</strong> / laporan123 (Ketapang)</p>
+                                <p><strong>kusni</strong> / laporan123 (Limbangan)</p>
+                                <p><strong>pujipurwati</strong> / laporan123 (Mojo)</p>
+                                <p><strong>nurkhasanah</strong> / laporan123 (Pesantren)</p>
+                            </details>
+                        </div>
+                    </div>
+                    <small>⚡ Password di-hash, session timeout 24 jam, brute force protection</small>
+                </div>
+            </div>
+            
+            <!-- Basic Local Mode -->
             <div id="localMode" class="login-mode" style="display: none;">
-                <div class="local-login-info">
-                    <p>Login menggunakan akun lokal yang sudah dikonfigurasi.</p>
+                <div class="warning-info">
+                    <p>⚠️ <strong>PERINGATAN:</strong> Mode ini TIDAK AMAN untuk production!</p>
+                    <p>Password terlihat di source code. Hanya untuk development/testing.</p>
                 </div>
                 <form id="loginForm">
                     <input type="text" id="username" name="username" placeholder="Username" required>
@@ -59,14 +113,15 @@
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K" class="toggle-password" id="togglePassword" alt="toggle">
                     </div>
-                    <button type="submit" id="loginBtn">Login</button>
+                    <button type="submit" id="loginBtn">⚠️ Login Basic (TIDAK AMAN)</button>
                 </form>
                 
                 <div class="demo-credentials">
-                    <h4>Demo Credentials:</h4>
+                    <h4>⚠️ Basic Demo Credentials:</h4>
                     <p><strong>admin</strong> / admin123</p>
                     <p><strong>ppkbd</strong> / ppkbd2024</p>
                     <p><strong>user1</strong> / user123</p>
+                    <p><strong>kecamatan</strong> / kec2024</p>
                 </div>
             </div>
 
@@ -83,46 +138,77 @@
     <script src="js/theme-toggle-optimized.js"></script>
     <script src="js/performance-optimized.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/secure-auth.js"></script>
     <script src="js/netlify-auth.js"></script>
     
     <script>
         // Mode switching functionality
         document.addEventListener('DOMContentLoaded', function() {
             const netlifyModeBtn = document.getElementById('netlifyModeBtn');
+            const secureLocalBtn = document.getElementById('secureLocalBtn');
             const localModeBtn = document.getElementById('localModeBtn');
             const netlifyMode = document.getElementById('netlifyMode');
+            const secureLocalMode = document.getElementById('secureLocalMode');
             const localMode = document.getElementById('localMode');
-            const togglePassword = document.getElementById('togglePassword');
             
             // Mode switching
             netlifyModeBtn.addEventListener('click', function() {
-                netlifyModeBtn.classList.add('active');
-                localModeBtn.classList.remove('active');
-                netlifyMode.style.display = 'block';
-                localMode.style.display = 'none';
+                setActiveMode('netlify');
+            });
+            
+            secureLocalBtn.addEventListener('click', function() {
+                setActiveMode('secure');
             });
             
             localModeBtn.addEventListener('click', function() {
-                localModeBtn.classList.add('active');
-                netlifyModeBtn.classList.remove('active');
-                localMode.style.display = 'block';
-                netlifyMode.style.display = 'none';
+                setActiveMode('local');
             });
             
-            // Toggle password visibility
-            if (togglePassword) {
-                togglePassword.addEventListener('click', function() {
-                    const passwordInput = document.getElementById('password');
-                    
-                    if (passwordInput.type === 'password') {
-                        passwordInput.type = 'text';
-                        togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K';
-                    } else {
-                        passwordInput.type = 'password';
-                        togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBkPSJNMyAzTDIxIDIxIiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
-                    }
-                });
+            function setActiveMode(mode) {
+                // Reset all buttons
+                netlifyModeBtn.classList.remove('active');
+                secureLocalBtn.classList.remove('active');
+                localModeBtn.classList.remove('active');
+                
+                // Hide all modes
+                netlifyMode.style.display = 'none';
+                secureLocalMode.style.display = 'none';
+                localMode.style.display = 'none';
+                
+                // Show selected mode
+                if (mode === 'netlify') {
+                    netlifyModeBtn.classList.add('active');
+                    netlifyMode.style.display = 'block';
+                } else if (mode === 'secure') {
+                    secureLocalBtn.classList.add('active');
+                    secureLocalMode.style.display = 'block';
+                } else if (mode === 'local') {
+                    localModeBtn.classList.add('active');
+                    localMode.style.display = 'block';
+                }
             }
+            
+            // Password toggle functionality
+            function setupPasswordToggle(toggleId, passwordId) {
+                const togglePassword = document.getElementById(toggleId);
+                if (togglePassword) {
+                    togglePassword.addEventListener('click', function() {
+                        const passwordInput = document.getElementById(passwordId);
+                        
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K';
+                        } else {
+                            passwordInput.type = 'password';
+                            togglePassword.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDlDMTMuNjU2OSA5IDE1IDEwLjM0MzEgMTUgMTJDMTUgMTMuNjU2OSAxMy42NTY5IDE1IDEyIDE1QzEwLjM0MzEgMTUgOSAxMy42NTY5IDkgMTJDOSAxMC4zNDMxIDEwLjM0MzEgOSAxMiA5WiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDNDNy4wMjk0NCAzIDMgNy4wMjk0NCAzIDEyQzMgMTYuOTcwNiA3LjAyOTQ0IDIxIDEyIDIxQzE2Ljk3MDYgMjEgMjEgMTYuOTcwNiAyMSAxMkMyMSA3LjAyOTQ0IDE2Ljk3MDYgMyAxMiAzWk01IDEyQzUgOC4xMzQwMSA4LjEzNDAxIDUgMTIgNUMxNS44NjYgNSAxOSA4LjEzNDAxIDE5IDEyQzE5IDE1Ljg2NiAxNS44NjYgMTkgMTIgMTlDOC4xMzQwMSAxOSA1IDE1Ljg2NiA1IDEyWiIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBkPSJNMyAzTDIxIDIxIiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+                        }
+                    });
+                }
+            }
+            
+            // Setup password toggles for all modes
+            setupPasswordToggle('secureTogglePassword', 'securePassword');
+            setupPasswordToggle('togglePassword', 'password');
         });
     </script>
     

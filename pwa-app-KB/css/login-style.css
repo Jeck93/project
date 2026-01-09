@@ -452,3 +452,263 @@ body.netlify-identity-open {
     font-size: 12px;
   }
 }
+/* =========================================
+   SECURITY WARNING STYLES
+========================================= */
+.warning-info {
+  background: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 2px solid #ffc107;
+  animation: warningPulse 2s infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% { border-color: #ffc107; }
+  50% { border-color: #dc3545; }
+}
+
+.warning-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.warning-info strong {
+  color: #dc3545;
+}
+
+/* Secure login info */
+.secure-login-info {
+  background: #d1ecf1;
+  color: #0c5460;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #bee5eb;
+}
+
+.secure-login-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Secure credentials display */
+.secure-credentials {
+  background: #e8f5e8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #c3e6cb;
+}
+
+.secure-credentials h4 {
+  margin: 0 0 10px 0;
+  color: #155724;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.secure-credentials p {
+  margin: 5px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #155724;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #c3e6cb;
+}
+
+.secure-credentials small {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Mode button styling updates */
+.mode-btn {
+  position: relative;
+}
+
+.mode-btn:contains("⚠️") {
+  background: #fff3cd;
+  color: #856404;
+  border-color: #ffc107;
+}
+
+.mode-btn:contains("⚠️"):hover {
+  background: #ffeaa7;
+  color: #856404;
+}
+
+.mode-btn:contains("⚠️").active {
+  background: #ffc107;
+  color: #212529;
+}
+
+.mode-btn:contains("🔒") {
+  background: #e8f5e8;
+  color: #155724;
+  border-color: #28a745;
+}
+
+.mode-btn:contains("🔒"):hover {
+  background: #d4edda;
+  color: #155724;
+}
+
+.mode-btn:contains("🔒").active {
+  background: #28a745;
+  color: white;
+}
+
+/* Security level indicators */
+.security-level {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 5px;
+}
+
+.security-high {
+  background: #28a745;
+  color: white;
+}
+
+.security-medium {
+  background: #ffc107;
+  color: #212529;
+}
+
+.security-low {
+  background: #dc3545;
+  color: white;
+}
+
+/* Enhanced button styling for security modes */
+#secureLoginBtn {
+  background: #28a745;
+  border: 2px solid #28a745;
+}
+
+#secureLoginBtn:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+#loginBtn {
+  background: #dc3545;
+  border: 2px solid #dc3545;
+}
+
+#loginBtn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Responsive adjustments for 3 modes */
+@media (max-width: 480px) {
+  .login-mode-selector {
+    flex-direction: column;
+  }
+  
+  .mode-btn {
+    border-radius: 6px;
+    margin-bottom: 2px;
+  }
+  
+  .mode-btn:last-child {
+    margin-bottom: 0;
+  }
+  
+  .warning-info,
+  .secure-login-info {
+    padding: 12px;
+  }
+  
+  .secure-credentials,
+  .demo-credentials {
+    padding: 12px;
+  }
+}
+/* =========================================
+   CREDENTIALS GRID STYLING
+========================================= */
+.credentials-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.admin-creds, .desa-creds {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.admin-creds h5, .desa-creds h5 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.admin-creds {
+  border-left: 3px solid #dc3545;
+}
+
+.desa-creds {
+  border-left: 3px solid #28a745;
+}
+
+/* Details/Summary styling */
+details {
+  margin-top: 8px;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: #6c757d;
+  padding: 4px 0;
+  border-bottom: 1px dashed #dee2e6;
+  margin-bottom: 5px;
+}
+
+summary:hover {
+  color: #495057;
+}
+
+details[open] summary {
+  margin-bottom: 8px;
+}
+
+details p {
+  margin: 3px 0;
+  font-size: 11px;
+}
+
+/* Responsive grid */
+@media (max-width: 480px) {
+  .credentials-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .admin-creds, .desa-creds {
+    padding: 8px;
+  }
+}

@@ -21,35 +21,170 @@ const CONFIG = {
     AUTH: {
         USERNAME: 'admin',
         PASSWORD: 'admin123',
-        // Multiple users configuration
+        // Multiple users configuration - Petugas PPKBD per Desa
         USERS: [
+            // Admin Users
             { 
                 username: 'admin', 
                 password: 'admin123', 
                 name: 'Administrator',
                 email: 'admin@ppkbd.local',
-                role: 'admin'
+                role: 'admin',
+                desa: 'Pusat'
             },
             { 
                 username: 'ppkbd', 
                 password: 'ppkbd2024', 
                 name: 'PPKBD Staff',
                 email: 'ppkbd@kemendukbangga.go.id',
-                role: 'staff'
+                role: 'staff',
+                desa: 'Pusat'
+            },
+            
+            // Petugas PPKBD per Desa Kecamatan Ulujami
+            { 
+                username: 'cholilah', 
+                password: 'laporan123', 
+                name: 'Cholilah',
+                email: 'cholilah@sukorejo.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Sukorejo'
             },
             { 
-                username: 'user1', 
-                password: 'user123', 
-                name: 'User Demo',
-                email: 'user1@demo.local',
-                role: 'user'
+                username: 'harwati', 
+                password: 'laporan123', 
+                name: 'Harwati',
+                email: 'harwati@botekan.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Botekan'
             },
             { 
-                username: 'kecamatan', 
-                password: 'kec2024', 
-                name: 'Petugas Kecamatan',
-                email: 'kecamatan@ulujami.go.id',
-                role: 'operator'
+                username: 'friska', 
+                password: 'laporan123', 
+                name: 'Friska',
+                email: 'friska@rowosari.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Rowosari'
+            },
+            { 
+                username: 'sugiarti', 
+                password: 'laporan123', 
+                name: 'Sugiarti',
+                email: 'sugiarti@ambowetan.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Ambowetan'
+            },
+            { 
+                username: 'kiswati', 
+                password: 'laporan123', 
+                name: 'Kiswati',
+                email: 'kiswati@pagergunung.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Pagergunung'
+            },
+            { 
+                username: 'nuraini', 
+                password: 'laporan123', 
+                name: 'Nuraini',
+                email: 'nuraini@wiyorowetan.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Wiyorowetan'
+            },
+            { 
+                username: 'umirohwati', 
+                password: 'laporan123', 
+                name: 'Umirohwati',
+                email: 'umirohwati@samong.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Samong'
+            },
+            { 
+                username: 'masrurotun', 
+                password: 'laporan123', 
+                name: 'Masrurotun',
+                email: 'masrurotun@tasikrejo.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Tasikrejo'
+            },
+            { 
+                username: 'suwati', 
+                password: 'laporan123', 
+                name: 'Suwati',
+                email: 'suwati@bumirejo.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Bumirejo'
+            },
+            { 
+                username: 'turikhah', 
+                password: 'laporan123', 
+                name: 'Turikhah',
+                email: 'turikhah@kaliprau.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Kaliprau'
+            },
+            { 
+                username: 'fathanah', 
+                password: 'laporan123', 
+                name: 'Fathanah',
+                email: 'fathanah@kertosari.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Kertosari'
+            },
+            { 
+                username: 'turahati', 
+                password: 'laporan123', 
+                name: 'Turahati',
+                email: 'turahati@pamutih.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Pamutih'
+            },
+            { 
+                username: 'tunirah', 
+                password: 'laporan123', 
+                name: 'Tunirah',
+                email: 'tunirah@padek.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Padek'
+            },
+            { 
+                username: 'isrowiyah', 
+                password: 'laporan123', 
+                name: 'Isrowiyah',
+                email: 'isrowiyah@blendung.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Blendung'
+            },
+            { 
+                username: 'nurul', 
+                password: 'laporan123', 
+                name: 'Nurul',
+                email: 'nurul@ketapang.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Ketapang'
+            },
+            { 
+                username: 'kusni', 
+                password: 'laporan123', 
+                name: 'Kusni',
+                email: 'kusni@limbangan.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Limbangan'
+            },
+            { 
+                username: 'pujipurwati', 
+                password: 'laporan123', 
+                name: 'Pujipurwati',
+                email: 'pujipurwati@mojo.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Mojo'
+            },
+            { 
+                username: 'nurkhasanah', 
+                password: 'laporan123', 
+                name: 'Nurkhasanah',
+                email: 'nurkhasanah@pesantren.ulujami.go.id',
+                role: 'petugas_desa',
+                desa: 'Pesantren'
             }
         ]
     }
