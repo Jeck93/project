@@ -1,10 +1,10 @@
 // Configuration file for Google Sheets integration
 const CONFIG = {
     // Google Apps Script Web App URL - Updated URL from user
-    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwbkVQyK7Ur1__izMxhxAkC8DJOnHKV5_qAkLfgko98M8KaT3APfrNpyq5Xq6xbzZn5/exec',
+    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwNGxYMWpNK4c2ySD0p1LJ3ACCvP471ZFkbqSBGXsPzbefFB30in6sS-T5Px7e6TSjo8A/exec',
     
     // Spreadsheet ID (opsional, sudah diset di Apps Script)
-    SPREADSHEET_ID: '1VxDv48i3Sx5pNBid1sZOeSCh2sNldBGJgEsUMFnud6g',
+    SPREADSHEET_ID: '1veMt65u8iXSuElOrGHg2ZSoXyOjeRP1cBk0VKx74NYU',
     
     // Retry settings
     MAX_RETRIES: 3,

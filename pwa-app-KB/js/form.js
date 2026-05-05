@@ -542,7 +542,7 @@ async function sendToGoogleSheets(data) {
     if (typeof CONFIG !== 'undefined' && CONFIG.GOOGLE_SCRIPT_URL) {
         GOOGLE_SCRIPT_URL = CONFIG.GOOGLE_SCRIPT_URL;
     } else {
-        GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbkVQyK7Ur1__izMxhxAkC8DJOnHKV5_qAkLfgko98M8KaT3APfrNpyq5Xq6xbzZn5/exec';
+        GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNGxYMWpNK4c2ySD0p1LJ3ACCvP471ZFkbqSBGXsPzbefFB30in6sS-T5Px7e6TSjo8A/exec';
         console.warn('CONFIG not found, using fallback URL');
     }
 

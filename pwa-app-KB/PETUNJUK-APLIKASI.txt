@@ -47,3 +47,12 @@ PETUNJUK APLIKASI PWA APP KB
 - Pastikan service worker dan file PWA terdaftar dengan benar.
 - Pastikan localStorage tidak menyimpan token lama saat mengubah konfigurasi login.
 - Dokumentasi tambahan bisa ditemukan di file MD yang dipindahkan ke folder archive/.
+
+===update ke github===
+Selalu cek posisi branch Sebelum ngoding:
+KEtik : git branch
+Pastikan: "* main", Kalau bukan: ketik "git checkout main"
+Cara commit :
+git add .
+git commit -m "update fitur X"
+git push
