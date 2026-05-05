@@ -920,281 +920,8 @@ function testFunction() {
 }
 
 /**
- * Upload KTP image to Google Drive
+ * Legacy KTP upload helper functions removed because Foto KTP is no longer used.
  */
-function uploadKTPToGoogleDrive(base64Data, namaIstri, nikIstri, timestamp) {
-  try {
-    console.log('Starting KTP upload process...');
-    console.log('Data length:', base64Data.length);
-    console.log('Nama Istri:', namaIstri);
-    console.log('NIK:', nikIstri);
-    
-    // Parse base64 data
-    const base64 = base64Data.split(',')[1]; // Remove data:image/jpeg;base64, part
-    const mimeType = base64Data.split(',')[0].split(':')[1].split(';')[0]; // Extract MIME type
-    
-    console.log('MIME type:', mimeType);
-    console.log('Base64 length:', base64.length);
-    
-    // Create improved filename
-    const date = new Date(timestamp);
-    const dateStr = Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd_HH-mm-ss');
-    
-    // Clean and validate nama istri
-    let cleanNama = (namaIstri || 'Unknown').toString().trim();
-    if (cleanNama === '' || cleanNama === 'Unknown' || cleanNama === 'undefined' || cleanNama === 'null') {
-      cleanNama = 'NoName';
-    }
-    
-    // Limit nama length and clean special characters
-    cleanNama = cleanNama
-      .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special chars except spaces
-      .replace(/\s+/g, '_') // Replace spaces with underscores
-      .substring(0, 20); // Limit to 20 characters
-    
-    // Clean and validate NIK
-    let cleanNIK = (nikIstri || '').toString().replace(/[^0-9]/g, '');
-    if (cleanNIK === '' || cleanNIK.length < 10) {
-      cleanNIK = 'NoNIK_' + Date.now().toString().slice(-8); // Use timestamp as fallback
-    }
-    
-    // Determine file extension based on MIME type
-    let fileExt = 'jpg'; // default
-    if (mimeType.includes('png')) fileExt = 'png';
-    else if (mimeType.includes('gif')) fileExt = 'gif';
-    else if (mimeType.includes('webp')) fileExt = 'webp';
-    
-    // Create filename with improved format: KTP_[Nama]_NIK-[NIK]_[Date].[ext]
-    const fileName = `KTP_${cleanNama}_NIK-${cleanNIK}_${dateStr}.${fileExt}`;
-    
-    console.log('Generated filename:', fileName);
-    console.log('Filename length:', fileName.length);
-    
-    // Convert base64 to blob with improved filename
-    const blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, fileName);
-    
-    // Get or create KTP folder
-    console.log('Getting KTP folder...');
-    const ktpFolder = getOrCreateKTPFolder();
-    console.log('KTP folder obtained:', ktpFolder.getName());
-    
-    // Check for existing files with similar names to avoid duplicates
-    const existingFiles = ktpFolder.getFilesByName(fileName);
-    let finalFileName = fileName;
-    let counter = 1;
-    
-    while (existingFiles.hasNext()) {
-      const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
-      const extension = fileName.substring(fileName.lastIndexOf('.'));
-      finalFileName = `${nameWithoutExt}_v${counter}${extension}`;
-      counter++;
-      
-      // Check if this versioned name exists
-      const versionedFiles = ktpFolder.getFilesByName(finalFileName);
-      if (!versionedFiles.hasNext()) {
-        break;
-      }
-    }
-    
-    // Update blob name if changed
-    if (finalFileName !== fileName) {
-      console.log('Filename updated to avoid duplicates:', finalFileName);
-      blob.setName(finalFileName);
-    }
-    
-    // Upload file to Google Drive
-    console.log('Creating file in folder...');
-    const file = ktpFolder.createFile(blob);
-    console.log('File created with name:', finalFileName);
-    
-    // Set improved file description
-    const formattedDate = Utilities.formatDate(date, Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm:ss');
-    file.setDescription(`Foto KTP - Nama: ${namaIstri} | NIK: ${nikIstri} | Upload: ${formattedDate} | Size: ${Math.round(base64.length * 0.75 / 1024)} KB`);
-    
-    console.log('Setting file permissions...');
-    // Make file accessible (anyone with link can view)
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    
-    // Get file ID and create proper shareable URL
-    const fileId = file.getId();
-    console.log('File ID:', fileId);
-    
-    // Return direct view URL instead of /open URL
-    const fileUrl = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
-    console.log('File upload completed:', fileUrl);
-    
-    // Return file URL
-    return fileUrl;
-    
-  } catch (error) {
-    console.error('Error uploading KTP:', error);
-    throw new Error('Failed to upload KTP: ' + error.toString());
-  }
-}
-
-/**
- * Get KTP folder in Google Drive (menggunakan folder yang sudah ada)
- */
-function getOrCreateKTPFolder() {
-  try {
-    // Gunakan folder yang sudah ada berdasarkan ID
-    const folder = DriveApp.getFolderById(KTP_FOLDER_ID);
-    console.log('Using existing KTP folder:', folder.getName());
-    return folder;
-  } catch (error) {
-    console.error('Error accessing KTP folder by ID, trying by name...', error);
-    
-    // Fallback: cari berdasarkan nama jika ID tidak bisa diakses
-    try {
-      const folders = DriveApp.getFoldersByName(KTP_FOLDER_NAME);
-      
-      if (folders.hasNext()) {
-        const folder = folders.next();
-        console.log('Found KTP folder by name:', folder.getId());
-        return folder;
-      } else {
-        // Create new folder sebagai last resort
-        const folder = DriveApp.createFolder(KTP_FOLDER_NAME);
-        folder.setDescription('Folder untuk menyimpan foto KTP dari Form Laporan KB');
-        console.log('Created new KTP folder:', folder.getId());
-        return folder;
-      }
-    } catch (fallbackError) {
-      console.error('Error in fallback folder access:', fallbackError);
-      throw new Error('Failed to access KTP folder: ' + fallbackError.toString());
-    }
-  }
-}
-
-/**
- * Test function untuk upload KTP (safe version)
- */
-function testKTPUpload() {
-  try {
-    console.log('=== TESTING KTP UPLOAD ===');
-    
-    // This is a dummy base64 image for testing
-    const testBase64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A';
-    
-    const url = uploadKTPToGoogleDrive(testBase64, 'Test User KTP', '1234567890123456', new Date().toISOString());
-    console.log('=== KTP UPLOAD TEST SUCCESSFUL ===');
-    console.log('File URL:', url);
-    return url;
-    
-  } catch (error) {
-    console.error('=== KTP UPLOAD TEST FAILED ===');
-    console.error('Error:', error);
-    return 'Upload test failed: ' + error.toString();
-  }
-}
-
-/**
- * Test function untuk mengecek akses folder
- */
-function testFolderAccess() {
-  try {
-    const folder = getOrCreateKTPFolder();
-    console.log('Folder access successful:');
-    console.log('- Name:', folder.getName());
-    console.log('- ID:', folder.getId());
-    console.log('- URL:', folder.getUrl());
-    return {
-      success: true,
-      name: folder.getName(),
-      id: folder.getId(),
-      url: folder.getUrl()
-    };
-  } catch (error) {
-    console.error('Folder access failed:', error);
-    return {
-      success: false,
-      error: error.toString()
-    };
-  }
-}
-
-/**
- * Debug function untuk test upload dengan logging detail
- */
-function debugKTPUpload() {
-  console.log('=== DEBUG KTP UPLOAD START ===');
-  
-  // Test folder access first
-  try {
-    console.log('1. Testing folder access...');
-    const folderResult = testFolderAccess();
-    console.log('Folder test result:', folderResult);
-    
-    if (!folderResult.success) {
-      return 'Folder access failed: ' + folderResult.error;
-    }
-    
-    console.log('2. Testing file upload...');
-    const testBase64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A';
-    
-    const url = uploadKTPToGoogleDrive(testBase64, 'Debug Test User', '9999999999999999', new Date().toISOString());
-    console.log('3. Upload successful:', url);
-    
-    console.log('=== DEBUG KTP UPLOAD SUCCESS ===');
-    return 'Upload successful: ' + url;
-    
-  } catch (error) {
-    console.error('=== DEBUG KTP UPLOAD FAILED ===');
-    console.error('Error:', error);e.error('Error:', error);
-    console.error('Error stack:', error.stack);
-    return 'Upload failed: ' + error.toString();
-  }
-}
-
-/**
- * Test complete form submission dengan file upload
- */
-function testCompleteFormWithKTP() {
-  try {
-    console.log('=== TESTING COMPLETE FORM WITH KTP ===');
-    
-    const testData = {
-      timestamp: new Date().toISOString(),
-      akseptorKIE: 'Ya',
-      desa: 'Sukorejo',
-      tanggalPelayanan: '2024-12-15',
-      namaSuami: 'Test Suami Complete',
-      umurSuami: '30',
-      namaIstri: 'Test Istri Complete',
-      nikIstri: '1234567890123456',
-      tanggalLahirIstri: '1990-01-01',
-      alamat: 'Test Alamat Complete',
-      rt: '001',
-      rw: '001',
-      noHP: '08123456789',
-      jenisAlkon: 'IUD',
-      kepesertaanKB: 'Baru',
-      kondisiBaru: 'Pasca Persalinan',
-      alkonSebelumnya: '',
-      tempatPelayanan: 'Puskesmas Test',
-      akseptorPajak: 'BPJS',
-      fotoKTP: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A'
-    };
-    
-    const mockEvent = {
-      postData: {
-        contents: JSON.stringify(testData)
-      }
-    };
-    
-    console.log('Calling doPost with KTP data...');
-    const result = doPost(mockEvent);
-    console.log('=== COMPLETE TEST SUCCESSFUL ===');
-    console.log('Result:', result.getContent());
-    
-    return result.getContent();
-    
-  } catch (error) {
-    console.error('=== COMPLETE TEST FAILED ===');
-    console.error('Error:', error);
-    return 'Complete test failed: ' + error.toString();
-  }
-}
 
 /**
  * Test update function
@@ -1279,6 +1006,55 @@ function testDeleteData() {
 }
 
 /**
+ * Test create function
+ */
+function testCreateData() {
+  try {
+    console.log('=== TESTING CREATE DATA ===');
+    
+    const testData = {
+      timestamp: new Date().toISOString(),
+      akseptorKIE: 'Ya',
+      desa: 'Test Desa',
+      tanggalPelayanan: '2024-12-15',
+      namaSuami: 'Test Suami',
+      umurSuami: '30',
+      namaIstri: 'Test Istri',
+      nikIstri: '1234567890123456',
+      tanggalLahirIstri: '1990-01-01',
+      alamat: 'Test Alamat',
+      rt: '001',
+      rw: '001',
+      noHP: '08123456789',
+      jenisAlkon: 'IUD',
+      kepesertaanKB: 'Baru',
+      kondisiBaru: 'Pasca Persalinan',
+      alkonSebelumnya: '',
+      tempatPelayanan: 'Puskesmas Test',
+      akseptorPajak: 'BPJS'
+    };
+    
+    const mockEvent = {
+      postData: {
+        contents: JSON.stringify(testData)
+      }
+    };
+    
+    console.log('Calling doPost with create data...');
+    const result = doPost(mockEvent);
+    console.log('=== CREATE TEST SUCCESSFUL ===');
+    console.log('Result:', result.getContent());
+    
+    return result.getContent();
+    
+  } catch (error) {
+    console.error('=== CREATE TEST FAILED ===');
+    console.error('Error:', error);
+    return 'Create test failed: ' + error.toString();
+  }
+}
+
+/**
  * Test all CRUD operations in sequence
  */
 function testAllCRUD() {
@@ -1287,7 +1063,7 @@ function testAllCRUD() {
     
     // 1. Test Create
     console.log('1. Testing CREATE...');
-    const createResult = testCompleteFormWithKTP();
+    const createResult = testCreateData();
     console.log('Create result:', createResult);
     
     // 2. Test Update
