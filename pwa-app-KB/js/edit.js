@@ -350,134 +350,10 @@ function populateForm(data) {
         setRadioValue('akseptorKIE', data.akseptorKIE);
     }
     
-    // Show current KTP if exists
-    console.log('=== CHECKING KTP DISPLAY ===');
-    console.log('Full data object:', data);
-    console.log('data.fotoKTPUrl:', data.fotoKTPUrl);
-    console.log('data.fotoKTP:', data.fotoKTP);
-    
-    if (data.fotoKTPUrl || data.fotoKTP) {
-        const ktpUrl = data.fotoKTPUrl || data.fotoKTP;
-        console.log('Found KTP URL:', ktpUrl);
-        showCurrentKTP(ktpUrl);
-    } else {
-        console.log('No KTP URL found in main fields, checking alternatives...');
-        // Check for alternative field names
-        const alternativeFields = ['Foto KTP', 'Foto KTP (URL)'];
-        let found = false;
-        for (const field of alternativeFields) {
-            if (data[field]) {
-                console.log(`Found alternative KTP field "${field}":`, data[field]);
-                showCurrentKTP(data[field]);
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
-            console.log('❌ No KTP photo found in any field');
-            console.log('Available fields:', Object.keys(data));
-        }
-    }
-    
     // Store original data for reference
     window.originalData = data;
     
     console.log('Form population completed');
-}
-
-// Show current KTP photo
-function showCurrentKTP(ktpUrl) {
-    console.log('=== SHOW CURRENT KTP ===');
-    console.log('KTP URL received:', ktpUrl);
-    console.log('KTP URL type:', typeof ktpUrl);
-    console.log('KTP URL length:', ktpUrl ? ktpUrl.length : 0);
-    
-    const currentSection = document.getElementById('currentKtpSection');
-    const previewDiv = document.getElementById('currentKtpPreview');
-    
-    console.log('currentSection element:', !!currentSection);
-    console.log('previewDiv element:', !!previewDiv);
-    
-    if (!currentSection || !previewDiv) {
-        console.warn('❌ KTP display elements not found');
-        return;
-    }
-    
-    if (ktpUrl && ktpUrl !== 'Tidak Ada' && !ktpUrl.includes('Upload Failed') && ktpUrl.trim() !== '') {
-        console.log('✅ Valid KTP URL found, showing KTP...');
-        
-        // Convert Google Drive URL to proper format
-        let displayUrl = ktpUrl;
-        let isGoogleDrive = false;
-        
-        // Check if it's a Google Drive URL and convert it
-        if (ktpUrl.includes('drive.google.com')) {
-            isGoogleDrive = true;
-            
-            // Extract file ID from various Google Drive URL formats
-            let fileId = null;
-            
-            if (ktpUrl.includes('/open?id=')) {
-                fileId = ktpUrl.split('/open?id=')[1].split('&')[0];
-            } else if (ktpUrl.includes('/file/d/')) {
-                fileId = ktpUrl.split('/file/d/')[1].split('/')[0];
-            } else if (ktpUrl.includes('id=')) {
-                fileId = ktpUrl.split('id=')[1].split('&')[0];
-            }
-            
-            if (fileId) {
-                // Use thumbnail format for better compatibility and no 403 errors
-                displayUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
-                console.log('Converted Google Drive URL:', displayUrl);
-            } else {
-                console.warn('Could not extract file ID from Google Drive URL:', ktpUrl);
-                // Fallback: try to use the original URL but show warning
-                displayUrl = ktpUrl;
-            }
-        }
-        
-        // Check if it's a valid URL or Google Drive link
-        if (ktpUrl.startsWith('http') || ktpUrl.startsWith('https://')) {
-            console.log('📷 Displaying as image URL');
-            previewDiv.innerHTML = `
-                <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #f9f9f9;">
-                    <div style="margin-bottom: 10px;">
-                        <img src="${displayUrl}" alt="KTP saat ini" 
-                             style="max-width: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px; display: block; margin-bottom: 5px;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; console.error('Failed to load KTP image:', '${displayUrl}');">
-                        <div style="display: none; padding: 20px; text-align: center; background: #f0f0f0; border-radius: 4px;">
-                            ${isGoogleDrive ? 
-                                '📄 Foto KTP tersedia di Google Drive<br><small style="color: #666;">Klik link di bawah untuk melihat</small>' : 
-                                '📄 Foto KTP tersedia<br><small style="color: #666;">Gambar tidak dapat dimuat</small>'
-                            }
-                        </div>
-                    </div>
-                    <div style="font-size: 12px; color: #666;">
-                        ${isGoogleDrive ? '📁 Tersimpan di Google Drive' : '🔗 Link eksternal'}<br>
-                        <a href="${ktpUrl}" target="_blank" style="color: #007bff; text-decoration: none;">
-                            🔗 Buka di tab baru
-                        </a>
-                    </div>
-                </div>
-            `;
-            currentSection.style.display = 'block';
-        } else {
-            console.log('📄 Displaying as placeholder (non-URL format)');
-            // Handle other formats or show placeholder
-            previewDiv.innerHTML = `
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; background: #f9f9f9; text-align: center;">
-                    📄 Foto KTP tersedia<br>
-                    <small style="color: #666;">Format: ${ktpUrl.length > 50 ? 'Base64 data' : ktpUrl}</small>
-                </div>
-            `;
-            currentSection.style.display = 'block';
-        }
-        console.log('✅ KTP section displayed successfully');
-    } else {
-        console.log('❌ No valid KTP URL to display:', ktpUrl);
-        currentSection.style.display = 'none';
-    }
 }
 
 // Form event listeners
@@ -569,320 +445,6 @@ function handleJenisAlkonChange() {
     }
 }
 
-// File upload preview
-document.getElementById('fotoKTP').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const previewContainer = document.getElementById('fotoKTPPreview');
-    const previewImage = document.getElementById('fotoKTPImage');
-    const previewInfo = document.getElementById('fotoKTPInfo');
-    const removeButton = document.getElementById('removeFotoKTP');
-    
-    if (!previewContainer || !previewImage || !previewInfo || !removeButton) {
-        console.warn('Preview elements not found');
-        return;
-    }
-    
-    if (file) {
-        console.log('File selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-        
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('❌ Ukuran file terlalu besar. Maksimal 5MB.');
-            e.target.value = '';
-            hidePreview();
-            return;
-        }
-        
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            alert('❌ File harus berupa gambar.');
-            e.target.value = '';
-            hidePreview();
-            return;
-        }
-        
-        // Show preview
-        showPreview(file);
-    } else {
-        hidePreview();
-    }
-    
-    function showPreview(file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            previewImage.src = e.target.result;
-            previewInfo.textContent = `📁 ${file.name} (${formatFileSize(file.size)})`;
-            previewContainer.style.display = 'block';
-            previewContainer.classList.add('has-image');
-            
-            // Add smooth animation
-            previewContainer.style.opacity = '0';
-            previewContainer.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
-                previewContainer.style.transition = 'all 0.3s ease';
-                previewContainer.style.opacity = '1';
-                previewContainer.style.transform = 'translateY(0)';
-            }, 10);
-        };
-        
-        reader.onerror = function() {
-            alert('❌ Gagal membaca file gambar');
-            hidePreview();
-        };
-        
-        reader.readAsDataURL(file);
-    }
-    
-    function hidePreview() {
-        previewContainer.style.display = 'none';
-        previewContainer.classList.remove('has-image');
-        previewImage.src = '';
-        previewInfo.textContent = '';
-    }
-    
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-});
-
-// Handle remove button for new photo preview
-document.addEventListener('DOMContentLoaded', function() {
-    const removeButton = document.getElementById('removeFotoKTP');
-    const fileInput = document.getElementById('fotoKTP');
-    const previewContainer = document.getElementById('fotoKTPPreview');
-    
-    if (removeButton && fileInput && previewContainer) {
-        removeButton.addEventListener('click', function() {
-            fileInput.value = '';
-            previewContainer.style.display = 'none';
-            previewContainer.classList.remove('has-image');
-            document.getElementById('fotoKTPImage').src = '';
-            document.getElementById('fotoKTPInfo').textContent = '';
-        });
-    }
-});
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            img.src = e.target.result;
-            preview.style.display = 'block';
-            console.log('✅ File preview loaded successfully');
-        };
-        reader.onerror = function() {
-            alert('❌ Gagal membaca file. Silakan coba lagi.');
-            preview.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.style.display = 'none';
-        console.log('No file selected, hiding preview');
-    }
-});
-
-// Form submission
-document.getElementById('editForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    try {
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = '⏳ Menyimpan...';
-        submitBtn.disabled = true;
-        
-        // Collect form data
-        const formData = new FormData(e.target);
-        const data = {};
-        
-        // Convert FormData to object
-        for (let [key, value] of formData.entries()) {
-            if (key !== 'fotoKTP') {
-                data[key] = value;
-            }
-        }
-        
-        // Handle sub-questions for specific contraceptive methods
-        const selectedAlkon = document.querySelector('input[name="jenisAlkon"]:checked');
-        if (selectedAlkon) {
-            const alkonValue = selectedAlkon.value;
-            
-            if (alkonValue === 'Implant') {
-                const jenisImplant = document.querySelector('input[name="jenisImplant"]:checked');
-                if (jenisImplant) {
-                    data.jenisAlkon = `${alkonValue} (${jenisImplant.value})`;
-                }
-            }
-        }
-        
-        // Handle kepesertaan KB sub-questions - keep them separate
-        const selectedKepesertaan = document.querySelector('input[name="kepesertaanKB"]:checked');
-        if (selectedKepesertaan) {
-            const kepesertaanValue = selectedKepesertaan.value;
-            data.kepesertaanKB = kepesertaanValue; // Keep the main value separate
-            
-            if (kepesertaanValue === 'Baru') {
-                const kondisiBaru = document.querySelector('input[name="kondisiBaru"]:checked');
-                if (kondisiBaru) {
-                    data.kondisiBaru = kondisiBaru.value; // Store as separate field
-                }
-            } else if (kepesertaanValue === 'Ganti Cara') {
-                const alkonSebelumnya = document.querySelector('input[name="alkonSebelumnya"]:checked');
-                if (alkonSebelumnya) {
-                    data.alkonSebelumnya = alkonSebelumnya.value;
-                }
-            }
-        }
-        
-        // Handle tempat pelayanan sub-question
-        const selectedTempat = document.querySelector('input[name="tempatPelayanan"]:checked');
-        if (selectedTempat && selectedTempat.value === 'Lainnya') {
-            const tempatLainnya = document.querySelector('input[name="tempatPelayananLainnya"]');
-            if (tempatLainnya && tempatLainnya.value) {
-                data.tempatPelayanan = `Lainnya (${tempatLainnya.value})`;
-            }
-        }
-        
-        // Handle asuransi sub-question
-        const selectedAsuransi = document.querySelector('input[name="akseptorPajak"]:checked');
-        if (selectedAsuransi && selectedAsuransi.value === 'Lainnya') {
-            const asuransiLainnya = document.querySelector('input[name="asuransiLainnya"]');
-            if (asuransiLainnya && asuransiLainnya.value) {
-                data.akseptorPajak = `Lainnya (${asuransiLainnya.value})`;
-            }
-        }
-        
-        // Ensure nikIstri is always included (critical for update operation)
-        if (!data.nikIstri || data.nikIstri.trim() === '') {
-            throw new Error('NIK Istri tidak ditemukan. Tidak dapat melakukan update.');
-        }
-        
-        data.nikIstri = nikIstri; // Use the NIK from URL parameter to ensure consistency
-        
-        // Keep original desa data (not editable in edit form)
-        if (window.originalData && window.originalData.desa) {
-            data.desa = window.originalData.desa;
-        }
-        
-        // Handle file upload
-        const fileInput = document.getElementById('fotoKTP');
-        if (fileInput.files[0]) {
-            const file = fileInput.files[0];
-            
-            console.log('=== FILE UPLOAD PROCESSING ===');
-            console.log('File name:', file.name);
-            console.log('File size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-            console.log('File type:', file.type);
-            
-            // Check file size before converting to base64
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit for JSONP
-                alert('❌ Ukuran foto terlalu besar untuk update via JSONP. Maksimal 2MB untuk edit data. Silakan kompres foto terlebih dahulu.\n\nTips kompres:\n• Gunakan aplikasi kompres foto\n• Kurangi resolusi gambar\n• Ubah format ke JPG dengan kualitas 80%');
-                
-                // Reset button
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                return;
-            }
-            
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                alert('❌ File harus berupa gambar (JPG, PNG, dll).');
-                
-                // Reset button
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                return;
-            }
-            
-            console.log('✅ File validation passed, converting to base64...');
-            
-            try {
-                data.fotoKTP = await fileToBase64(file);
-                console.log('✅ File converted to base64, length:', data.fotoKTP.length);
-                console.log('Base64 preview:', data.fotoKTP.substring(0, 100) + '...');
-            } catch (error) {
-                console.error('❌ Error converting file to base64:', error);
-                alert('❌ Gagal memproses file foto. Silakan coba lagi dengan file yang berbeda.');
-                
-                // Reset button
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                return;
-            }
-        } else {
-            console.log('ℹ️ No new file uploaded, keeping existing KTP URL');
-        }
-        
-        // Keep existing KTP URL if no new file uploaded
-        if (window.originalData && (window.originalData.fotoKTPUrl || window.originalData.fotoKTP)) {
-            data.existingKtpUrl = window.originalData.fotoKTPUrl || window.originalData.fotoKTP;
-        }
-        
-        // Add timestamp - gunakan fungsi safe dengan fallback
-        console.log('=== TIMESTAMP HANDLING FOR EDIT ===');
-        console.log('Original data timestamp (should be display format):', window.originalData ? window.originalData.timestamp : 'No original data');
-        
-        try {
-            if (window.originalData && window.originalData.timestamp) {
-                // Untuk edit, pertahankan tanggal asli tapi perbaiki tahun jika perlu
-                data.timestamp = await getSafeTimestamp(window.originalData.timestamp);
-            } else {
-                // Untuk data baru, gunakan timestamp saat ini
-                data.timestamp = await getSafeTimestamp();
-            }
-        } catch (error) {
-            console.error('❌ Error getting safe timestamp:', error);
-            // Ultimate fallback - format display
-            const now = new Date(2025, 11, 28, 12, 0, 0);
-            const day = now.getDate().toString().padStart(2, '0');
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            
-            data.timestamp = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-        }
-        
-        console.log('Final timestamp for edit (display format):', data.timestamp);
-        
-        // Validate that timestamp is in display format
-        if (data.timestamp && typeof data.timestamp === 'string' && data.timestamp.includes('/') && data.timestamp.includes(':')) {
-            console.log('✅ Timestamp is in correct display format');
-        } else {
-            console.warn('⚠️ WARNING: Timestamp is NOT in display format:', data.timestamp);
-            // Force convert to display format
-            try {
-                const date = new Date(data.timestamp);
-                if (!isNaN(date.getTime())) {
-                    const day = date.getDate().toString().padStart(2, '0');
-                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                    const year = date.getFullYear();
-                    const hours = date.getHours().toString().padStart(2, '0');
-                    const minutes = date.getMinutes().toString().padStart(2, '0');
-                    const seconds = date.getSeconds().toString().padStart(2, '0');
-                    
-                    data.timestamp = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-                    console.log('🔧 Force converted to display format:', data.timestamp);
-                }
-            } catch (error) {
-                console.error('Force conversion failed:', error);
-            }
-        }
-        
-        console.log('=== END TIMESTAMP HANDLING ===');
-        
-        console.log('Data to be sent for update:', data);
-        console.log('NIK Istri:', data.nikIstri);
         
         // Update in Google Sheets if online
         let sheetsSuccess = false;
@@ -967,11 +529,11 @@ document.getElementById('editForm').addEventListener('submit', async function(e)
                 errorMsg += 'Kemungkinan penyebab:\n';
                 errorMsg += '• Koneksi internet tidak stabil\n';
                 errorMsg += '• Google Apps Script sedang sibuk\n';
-                errorMsg += '• Data terlalu besar (terutama foto KTP)\n\n';
+                errorMsg += '• Data terlalu besar\n\n';
                 errorMsg += 'Solusi:\n';
                 errorMsg += '• Periksa koneksi internet\n';
                 errorMsg += '• Coba refresh halaman dan edit lagi\n';
-                errorMsg += '• Kompres foto KTP jika terlalu besar\n';
+                errorMsg += '• Kurangi ukuran data jika terlalu besar\n';
                 errorMsg += '• Coba lagi dalam beberapa menit';
                 
                 alert(errorMsg);
@@ -1250,12 +812,6 @@ window.diagnoseSyncIssue = async function() {
         if (window.lastSyncError.data) {
             const dataStr = JSON.stringify(window.lastSyncError.data);
             diagnosis += 'Ukuran Data: ' + (dataStr.length / 1024).toFixed(2) + ' KB\n';
-            
-            if (window.lastSyncError.data.fotoKTP) {
-                diagnosis += 'Foto KTP: Ada (' + (window.lastSyncError.data.fotoKTP.length / 1024).toFixed(2) + ' KB)\n';
-            } else {
-                diagnosis += 'Foto KTP: Tidak ada\n';
-            }
         }
     } else {
         diagnosis += '\n✅ Tidak ada error sinkronisasi yang tersimpan\n';
@@ -1263,7 +819,7 @@ window.diagnoseSyncIssue = async function() {
     
     diagnosis += '\n💡 SARAN PERBAIKAN:\n';
     diagnosis += '• Pastikan koneksi internet stabil\n';
-    diagnosis += '• Kompres foto KTP jika terlalu besar (max 2MB)\n';
+    diagnosis += '• Kurangi ukuran data jika terlalu besar (max 2MB)\n';
     diagnosis += '• Coba refresh halaman dan edit ulang\n';
     diagnosis += '• Tunggu beberapa menit jika Google Apps Script sibuk\n';
     
@@ -1309,105 +865,6 @@ window.testGoogleDriveAccess = async function(url) {
     });
 };
 
-// ===== FUNGSI DIAGNOSTIK UNTUK TROUBLESHOOTING =====
-
-/**
- * Test upload foto KTP untuk debugging
- */
-window.testKTPUpload = async function(file) {
-    console.log('=== KTP UPLOAD TEST ===');
-    
-    if (!file) {
-        const fileInput = document.getElementById('fotoKTP');
-        if (fileInput.files[0]) {
-            file = fileInput.files[0];
-        } else {
-            console.error('❌ No file selected');
-            alert('❌ Pilih file foto terlebih dahulu');
-            return false;
-        }
-    }
-    
-    console.log('File name:', file.name);
-    console.log('File size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-    console.log('File type:', file.type);
-    
-    try {
-        console.log('🔄 Testing file conversion...');
-        const base64 = await fileToBase64(file);
-        console.log('✅ Conversion success!');
-        console.log('Base64 length:', base64.length);
-        console.log('Estimated size:', (base64.length * 0.75 / 1024).toFixed(2) + 'KB');
-        
-        alert('✅ Test berhasil!\n\n' +
-              'File: ' + file.name + '\n' +
-              'Ukuran asli: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB\n' +
-              'Ukuran setelah konversi: ' + (base64.length * 0.75 / 1024).toFixed(2) + 'KB\n' +
-              'Status: Siap untuk upload');
-        
-        return true;
-    } catch (error) {
-        console.error('❌ Conversion failed:', error);
-        alert('❌ Test gagal: ' + error.message);
-        return false;
-    }
-};
-
-/**
- * Diagnosa lengkap masalah edit KTP
- */
-window.diagnoseKTPEdit = async function() {
-    console.log('🔍 === DIAGNOSA MASALAH EDIT KTP ===');
-    
-    let report = '🔍 LAPORAN DIAGNOSA EDIT KTP\n\n';
-    
-    // 1. Check form elements
-    report += '1️⃣ PEMERIKSAAN FORM:\n';
-    const form = document.getElementById('editForm');
-    const fileInput = document.getElementById('fotoKTP');
-    const currentKtpSection = document.getElementById('currentKtpSection');
-    
-    report += form ? '✅ Form edit ditemukan\n' : '❌ Form edit tidak ditemukan\n';
-    report += fileInput ? '✅ Input file KTP ditemukan\n' : '❌ Input file KTP tidak ditemukan\n';
-    report += currentKtpSection ? '✅ Section KTP saat ini ditemukan\n' : '❌ Section KTP saat ini tidak ditemukan\n';
-    
-    // 2. Check current data
-    report += '\n2️⃣ PEMERIKSAAN DATA:\n';
-    if (window.originalData) {
-        report += '✅ Data asli tersedia\n';
-        report += 'NIK: ' + (window.originalData.nikIstri || 'Tidak ada') + '\n';
-        report += 'Nama: ' + (window.originalData.namaIstri || 'Tidak ada') + '\n';
-        
-        const ktpUrl = window.originalData.fotoKTPUrl || window.originalData.fotoKTP || window.originalData['Foto KTP'];
-        if (ktpUrl) {
-            report += '✅ URL KTP tersedia: ' + ktpUrl.substring(0, 50) + '...\n';
-        } else {
-            report += '❌ URL KTP tidak ditemukan\n';
-        }
-    } else {
-        report += '❌ Data asli tidak tersedia\n';
-    }
-    
-    // 3. Check file selection
-    report += '\n3️⃣ PEMERIKSAAN FILE:\n';
-    if (fileInput && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        report += '✅ File dipilih: ' + file.name + '\n';
-        report += 'Ukuran: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB\n';
-        report += 'Tipe: ' + file.type + '\n';
-        
-        if (file.size > 2 * 1024 * 1024) {
-            report += '⚠️ File terlalu besar untuk edit (>2MB)\n';
-        } else {
-            report += '✅ Ukuran file OK untuk edit\n';
-        }
-    } else {
-        report += 'ℹ️ Tidak ada file baru dipilih\n';
-    }
-    
-    // 4. Check internet connection
-    report += '\n4️⃣ PEMERIKSAAN KONEKSI:\n';
-    report += navigator.onLine ? '✅ Status online\n' : '❌ Status offline\n';
     
     // 5. Test Google Sheets connection
     report += '\n5️⃣ PEMERIKSAAN GOOGLE SHEETS:\n';
@@ -1461,40 +918,6 @@ window.diagnoseKTPEdit = async function() {
 /**
  * Test kompresi foto
  */
-window.testPhotoCompression = async function() {
-    const fileInput = document.getElementById('fotoKTP');
-    
-    if (!fileInput || !fileInput.files[0]) {
-        alert('❌ Pilih file foto terlebih dahulu');
-        return;
-    }
-    
-    const file = fileInput.files[0];
-    console.log('=== TEST KOMPRESI FOTO ===');
-    console.log('File asli:', file.name, (file.size / 1024).toFixed(2) + 'KB');
-    
-    try {
-        // Test dengan berbagai target ukuran
-        const targets = [2048, 1024, 512]; // KB
-        
-        for (const target of targets) {
-            console.log(`\n🔄 Testing kompresi target: ${target}KB`);
-            const compressed = await fileToBase64(file, target);
-            const compressedSize = compressed.length * 0.75 / 1024;
-            console.log(`✅ Hasil: ${compressedSize.toFixed(2)}KB`);
-        }
-        
-        alert('✅ Test kompresi selesai. Lihat console untuk detail.');
-        
-    } catch (error) {
-        console.error('❌ Error kompresi:', error);
-        alert('❌ Error kompresi: ' + error.message);
-    }
-};
-
-/**
- * Bersihkan cache dan reset form
- */
 window.resetEditForm = function() {
     console.log('🔄 Resetting edit form...');
     
@@ -1504,13 +927,7 @@ window.resetEditForm = function() {
         form.reset();
     }
     
-    // Clear file input
-    const fileInput = document.getElementById('fotoKTP');
-    if (fileInput) {
-        fileInput.value = '';
-    }
-    
-    // Hide previews
+    // Hide previews if present
     const ktpPreview = document.getElementById('ktpPreview');
     if (ktpPreview) {
         ktpPreview.style.display = 'none';
@@ -1532,28 +949,6 @@ window.resetEditForm = function() {
     loadDataForEdit();
 };
 
-// Tambahkan tombol diagnostik ke halaman (untuk debugging)
-document.addEventListener('DOMContentLoaded', function() {
-    // Hanya tambahkan jika dalam mode debug (localhost atau parameter debug)
-    const isDebugMode = window.location.hostname === 'localhost' || 
-                       window.location.search.includes('debug=true');
-    
-    if (isDebugMode) {
-        console.log('🔧 Debug mode detected, adding diagnostic buttons...');
-        
-        const debugPanel = document.createElement('div');
-        debugPanel.innerHTML = `
-            <div style="position: fixed; top: 10px; right: 10px; background: #f0f0f0; padding: 10px; border-radius: 5px; z-index: 9999; font-size: 12px;">
-                <h4>🔧 Debug Tools</h4>
-                <button onclick="diagnoseKTPEdit()" style="margin: 2px; padding: 5px; font-size: 11px;">🔍 Diagnosa</button><br>
-                <button onclick="testKTPUpload()" style="margin: 2px; padding: 5px; font-size: 11px;">📤 Test Upload</button><br>
-                <button onclick="testPhotoCompression()" style="margin: 2px; padding: 5px; font-size: 11px;">🗜️ Test Kompresi</button><br>
-                <button onclick="resetEditForm()" style="margin: 2px; padding: 5px; font-size: 11px;">🔄 Reset Form</button>
-            </div>
-        `;
-        document.body.appendChild(debugPanel);
-    }
-});
 // ===== TIMESTAMP UTILS HELPER FUNCTIONS =====
 
 /**

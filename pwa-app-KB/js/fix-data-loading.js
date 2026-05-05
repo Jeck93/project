@@ -444,11 +444,7 @@ function convertSheetsToLocalFixed(sheetsItem) {
         kepesertaanKB: findColumn(['Kepesertaan KB', 'kepesertaan kb', 'KepesertaanKB', 'KB Membership'], sheetsItem),
         tempatPelayanan: findColumn(['Tempat Pelayanan', 'tempat pelayanan', 'TempatPelayanan', 'Service Place'], sheetsItem),
         akseptorPajak: findColumn(['Asuransi Yang di Pakai', 'Asuransi', 'asuransi', 'Insurance', 'Akseptor Pajak'], sheetsItem),
-        akseptorKIE: findColumn(['Akseptor Hasil KIE PPKBD\n( Khusus MKJP )', 'Akseptor KIE', 'Akseptor Hasil KIE PPKBD ( Khusus MKJP )', 'akseptor kie'], sheetsItem),
-        fotoKTP: findColumn(['Foto KTP', 'foto ktp', 'FotoKTP', 'KTP Photo'], sheetsItem),
-        fotoKTPUrl: findColumn(['Foto KTP', 'foto ktp', 'FotoKTP', 'KTP Photo'], sheetsItem)
-    };
-    
+        akseptorKIE: findColumn(['Akseptor Hasil KIE PPKBD\n( Khusus MKJP )', 'Akseptor KIE', 'Akseptor Hasil KIE PPKBD ( Khusus MKJP )', 'akseptor kie'], sheetsItem)
     console.log('✅ Enhanced conversion result:', converted);
     return converted;
 }

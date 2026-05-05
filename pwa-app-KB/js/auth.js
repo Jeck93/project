@@ -10,7 +10,7 @@ class AuthManager {
     }
     
     setupLoginForm() {
-        const loginForm = document.getElementById('loginForm');
+        const loginForm = document.getElementById('secureLoginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
@@ -19,10 +19,10 @@ class AuthManager {
     async handleLogin(e) {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const username = document.getElementById('secureUsername').value;
+        const password = document.getElementById('securePassword').value;
         const errorMsg = document.getElementById('errorMsg');
-        const loginBtn = document.getElementById('loginBtn');
+        const loginBtn = document.getElementById('secureLoginBtn');
         
         // Clear previous errors
         this.hideError();
@@ -38,9 +38,11 @@ class AuthManager {
             const validPassword = authConfig && authConfig.PASSWORD ? authConfig.PASSWORD : 'admin123';
 
             if (username === validUsername && password === validPassword) {
-                // Store auth token
-                localStorage.setItem('pwa_auth_token', 'demo_token_' + Date.now());
+                // Store auth token - consistent with app.js
+                localStorage.setItem('pwa_secure_token', 'demo_token_' + Date.now());
+                localStorage.setItem('pwa_auth_type', 'secure');
                 localStorage.setItem('pwa_username', username);
+                localStorage.setItem('pwa_session_start', new Date().toISOString());
                 
                 // Show success message
                 this.showSuccess('Login berhasil! Mengalihkan...');

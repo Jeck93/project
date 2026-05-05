@@ -859,60 +859,10 @@ class SheetsAPI {
                 
                 // Check URL length (Google Apps Script has URL length limits)
                 if (url.length > 8000) {
-                    cleanup();
-                    
-                    // Try without photo if URL is too long
-                    if (updateData.fotoKTP) {
-                        console.warn('URL too long with photo, trying without photo...');
-                        const updateDataWithoutPhoto = { ...updateData };
-                        delete updateDataWithoutPhoto.fotoKTP;
-                        
-                        const paramsWithoutPhoto = new URLSearchParams();
-                        Object.keys(updateDataWithoutPhoto).forEach(key => {
-                            const value = updateDataWithoutPhoto[key];
-                            if (value !== null && value !== undefined && value !== '') {
-                                paramsWithoutPhoto.append(key, String(value));
-                            }
-                        });
-                        
-                        const urlWithoutPhoto = `${this.baseUrl}?${paramsWithoutPhoto.toString()}`;
-                        
-                        if (urlWithoutPhoto.length > 8000) {
-                            reject(new Error('Data terlalu besar untuk diupdate via JSONP. Coba kurangi panjang teks di field lainnya.'));
-                            return;
-                        }
-                        
-                        // Retry without photo
-                        const script = document.createElement('script');
-                        script.id = callbackName + '_retry';
-                        script.onerror = (error) => {
-                            console.error('JSONP update script error (without photo):', error);
-                            cleanup();
-                            reject(new Error('JSONP update request failed - script load error'));
-                        };
-                        
-                        script.onload = () => {
-                            console.log('JSONP update script loaded successfully (without photo)');
-                        };
-                        
-                        script.src = urlWithoutPhoto;
-                        console.log('Retrying JSONP update without photo...');
-                        document.head.appendChild(script);
-                        
-                        // Show warning to user
-                        setTimeout(() => {
-                            if (window.alert) {
-                                alert('⚠️ Foto KTP tidak dapat diupdate karena ukuran terlalu besar. Data lainnya berhasil diupdate.');
-                            }
-                        }, 1000);
-                        
+                        cleanup();
+                        reject(new Error('Data terlalu besar untuk diupdate via JSONP. Coba kurangi ukuran data.'));
                         return;
                     }
-                    
-                    reject(new Error('Data terlalu besar untuk diupdate via JSONP. Coba kurangi ukuran data.'));
-                    return;
-                }
-                
                 // Create script tag for JSONP
                 const script = document.createElement('script');
                 script.id = callbackName;
@@ -1334,9 +1284,7 @@ class SheetsAPI {
             kondisiBaru: sheetsItem['Halaman Untuk Kepesertaan KB Baru'] || sheetsItem['Kondisi Baru'] || '',
             alkonSebelumnya: sheetsItem['Alkon Sebelumnya Yang di Pakai'] || sheetsItem['Alkon Sebelumnya'] || '',
             tempatPelayanan: sheetsItem['Tempat Pelayanan'] || '',
-            akseptorPajak: sheetsItem['Asuransi Yang di Pakai'] || sheetsItem.Asuransi || sheetsItem['Akseptor Pajak'] || '',
-            fotoKTPUrl: sheetsItem['Foto KTP'] || sheetsItem['Foto KTP (URL)'] || '',
-            fotoKTP: sheetsItem['Foto KTP'] || sheetsItem['Foto KTP (URL)'] || '' // Tambahan untuk konsistensi
+            akseptorPajak: sheetsItem['Asuransi Yang di Pakai'] || sheetsItem.Asuransi || sheetsItem['Akseptor Pajak'] || ''
         };
         
         console.log('Converted data:', converted);
@@ -1416,8 +1364,6 @@ class SheetsAPI {
             'Kepesertaan KB': localItem.kepesertaanKB,
             'Tempat Pelayanan': localItem.tempatPelayanan + (localItem.tempatPelayananLainnya ? ' - ' + localItem.tempatPelayananLainnya : ''),
             'Asuransi Yang di Pakai': localItem.akseptorPajak + (localItem.asuransiLainnya ? ' - ' + localItem.asuransiLainnya : ''),
-            'Foto KTP': localItem.fotoKTP || localItem.fotoKTPUrl || '',
-            'Alkon Sebelumnya Yang di Pakai': localItem.alkonSebelumnya || '',
             'Halaman Untuk Kepesertaan KB Baru': localItem.kondisiBaru || '',
             'Akseptor Hasil KIE PPKBD ( Khusus MKJP )': localItem.akseptorKIE || ''
             // Note: 'Jenis Alkon MKJP & NON MKJP Rumus' dan 'Asuransi Yang di Pakai Rumus' 

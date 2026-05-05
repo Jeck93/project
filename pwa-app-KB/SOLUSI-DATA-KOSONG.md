@@ -16,7 +16,7 @@ quickFixDataLoading()
 ```
 
 ### 2. Gunakan Debug Tool
-1. Buka file: `debug-data-issue.html`
+1. Buka file: `debug/debug-data-issue.html`
 2. Klik tombol "⚡ Quick Fix Data Loading"
 3. Tunggu proses selesai
 
@@ -60,7 +60,7 @@ debugCurrentData();
 - Menambah filter untuk baris kosong
 - Meningkatkan mapping kolom
 
-### 2. `debug-data-issue.html`
+### 2. `debug/debug-data-issue.html`
 - Tool debug untuk diagnosa masalah
 - Interface untuk perbaikan cepat
 - Preview data untuk validasi
@@ -106,7 +106,7 @@ Setelah menjalankan perbaikan:
 ## 📞 Bantuan Lebih Lanjut
 
 Jika masalah masih berlanjut:
-1. Buka `debug-data-issue.html`
+1. Buka `debug/debug-data-issue.html`
 2. Klik "📊 Analisis Data Saat Ini"
 3. Screenshot hasilnya untuk analisis lebih lanjut
 4. Periksa Console Browser untuk error messages

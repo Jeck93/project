@@ -6,10 +6,6 @@
 // ID Spreadsheet Anda
 const SPREADSHEET_ID = '1VxDv48i3Sx5pNBid1sZOeSCh2sNldBGJgEsUMFnud6g';
 
-// ID folder di Google Drive untuk menyimpan KTP (folder 'Foto KTP (File responses)')
-const KTP_FOLDER_ID = '1dJuoZk9PwS4h7ktBeuRpgLKHqzrMEMVTU426qae9oqfaGWQdZPI573lM5-l2tq_crEzWT9Bb';
-const KTP_FOLDER_NAME = 'Foto KTP (File responses)';
-
 function doPost(e) {
   try {
     // Log untuk debugging
@@ -123,7 +119,6 @@ function createData(data) {
         'Kepesertaan KB',
         'Tempat Pelayanan',
         'Asuransi Yang di Pakai',
-        'Foto KTP',
         'Alkon Sebelumnya Yang di Pakai',
         'Halaman Untuk Kepesertaan KB Baru',
         'Jenis Alkon MKJP & NON MKJP Rumus',
@@ -134,67 +129,7 @@ function createData(data) {
       console.log('Headers created');
     }
     
-    // Handle file upload jika ada
-    let ktpFileUrl = '';
-    console.log('Checking for file upload...');
-    
-    // Safe check for fotoKTP property
-    const hasFotoKTP = data && typeof data === 'object' && 
-                      (data.hasOwnProperty('Foto KTP') || data.hasOwnProperty('fotoKTP')) && 
-                      (data['Foto KTP'] || data.fotoKTP);
-    console.log('fotoKTP exists:', hasFotoKTP);
-    
-    if (hasFotoKTP) {
-      const fotoKTPData = data['Foto KTP'] || data.fotoKTP;
-      console.log('fotoKTP type:', typeof fotoKTPData);
-      console.log('fotoKTP length:', fotoKTPData ? fotoKTPData.length : 0);
-      
-      if (fotoKTPData.length > 100) {
-        console.log('fotoKTP first 100 chars:', fotoKTPData.substring(0, 100));
-      }
-      
-      if (fotoKTPData.startsWith('data:image/')) {
-        console.log('Valid image file detected, starting upload...');
-        try {
-          ktpFileUrl = uploadKTPToGoogleDrive(
-            fotoKTPData, 
-            data['Nama Istri'] || data.namaIstri || 'Unknown', 
-            data['NIK Istri'] || data.nikIstri || 'Unknown', 
-            data['Timestamp'] || data.timestamp || new Date().toISOString()
-          );
-          console.log('KTP uploaded successfully:', ktpFileUrl);
-        } catch (error) {
-          console.error('Failed to upload KTP:', error);
-          ktpFileUrl = 'Upload Failed: ' + error.toString();
-        }
-      } else if (fotoKTPData.includes('base64,')) {
-        console.log('Base64 file detected, trying to fix format...');
-        try {
-          let fixedData = fotoKTPData;
-          if (!fixedData.startsWith('data:')) {
-            fixedData = 'data:image/jpeg;base64,' + fixedData;
-          }
-          
-          ktpFileUrl = uploadKTPToGoogleDrive(
-            fixedData, 
-            data['Nama Istri'] || data.namaIstri || 'Unknown', 
-            data['NIK Istri'] || data.nikIstri || 'Unknown', 
-            data['Timestamp'] || data.timestamp || new Date().toISOString()
-          );
-          console.log('KTP uploaded successfully after format fix:', ktpFileUrl);
-        } catch (error) {
-          console.error('Failed to upload after format fix:', error);
-          ktpFileUrl = 'Format Error: ' + error.toString();
-        }
-      } else {
-        console.log('Invalid file format detected');
-        ktpFileUrl = 'Format Error: Invalid file format';
-      }
-    } else {
-      console.log('No file to upload');
-      ktpFileUrl = 'Tidak Ada';
-    }
-    
+    // No photo upload is used anymore
     // Siapkan data untuk ditambahkan ke sheet
     const rowData = [
       new Date(data['Timestamp'] || data.timestamp), // Convert to Date object
@@ -213,7 +148,6 @@ function createData(data) {
       data['Kepesertaan KB'] || data.kepesertaanKB || '',
       data['Tempat Pelayanan'] || data.tempatPelayanan || '',
       data['Asuransi Yang di Pakai'] || data.akseptorPajak || '', // Asuransi Yang di Pakai
-      ktpFileUrl || (data['Foto KTP'] || data.fotoKTP ? 'Ada - Upload Gagal' : 'Tidak Ada'), // Foto KTP
       data['Alkon Sebelumnya Yang di Pakai'] || data.alkonSebelumnya || '', // Alkon Sebelumnya Yang di Pakai
       data['Halaman Untuk Kepesertaan KB Baru'] || data.kondisiBaru || '', // Halaman Untuk Kepesertaan KB Baru
       '', // Jenis Alkon MKJP & NON MKJP Rumus (empty for now)
@@ -323,17 +257,6 @@ function updateData(data) {
       throw new Error('Data tidak ditemukan untuk NIK: ' + data.nikIstri);
     }
     
-    // Handle file upload if exists
-    let ktpFileUrl = data.existingKtpUrl || '';
-    if (data.fotoKTP && data.fotoKTP.startsWith('data:image/')) {
-      try {
-        ktpFileUrl = uploadKTPToGoogleDrive(data.fotoKTP, data.namaIstri, data.nikIstri, data.timestamp);
-      } catch (error) {
-        console.error('Failed to upload new KTP:', error);
-        ktpFileUrl = data.existingKtpUrl || 'Upload Failed: ' + error.toString();
-      }
-    }
-    
     // Prepare updated row data
     const updatedRowData = [
       new Date(data.timestamp),
@@ -352,7 +275,6 @@ function updateData(data) {
       data.kepesertaanKB || '',
       data.tempatPelayanan || '',
       data.akseptorPajak || '', // Asuransi Yang di Pakai
-      ktpFileUrl, // Foto KTP
       data.alkonSebelumnya || '', // Alkon Sebelumnya Yang di Pakai
       data.kondisiBaru || '', // Halaman Untuk Kepesertaan KB Baru
       '', // Jenis Alkon MKJP & NON MKJP Rumus (empty for now)
@@ -897,34 +819,6 @@ function updateDataForGet(params) {
     
     console.log('Found target row:', targetRow + 1);
     
-    // Handle file upload if exists
-    let ktpFileUrl = data.existingKtpUrl || '';
-    if (data['Foto KTP'] && data['Foto KTP'].startsWith('data:image/')) {
-      try {
-        ktpFileUrl = uploadKTPToGoogleDrive(
-          data['Foto KTP'], 
-          data['Nama Istri'] || data.namaIstri, 
-          nikIstri, 
-          data.Timestamp || data.timestamp
-        );
-      } catch (error) {
-        console.error('Failed to upload new KTP:', error);
-        ktpFileUrl = 'Upload Failed: ' + error.toString();
-      }
-    } else if (data.fotoKTP && data.fotoKTP.startsWith('data:image/')) {
-      try {
-        ktpFileUrl = uploadKTPToGoogleDrive(
-          data.fotoKTP, 
-          data['Nama Istri'] || data.namaIstri, 
-          nikIstri, 
-          data.Timestamp || data.timestamp
-        );
-      } catch (error) {
-        console.error('Failed to upload new KTP:', error);
-        ktpFileUrl = 'Upload Failed: ' + error.toString();
-      }
-    }
-    
     // Prepare row data for update - use the extracted nikIstri and handle both field formats
     const rowData = [
       data.Timestamp || data.timestamp || new Date().toISOString(),
@@ -943,7 +837,6 @@ function updateDataForGet(params) {
       data['Kepesertaan KB'] || data.kepesertaanKB || '',
       data['Tempat Pelayanan'] || data.tempatPelayanan || '',
       data['Asuransi Yang di Pakai'] || data.akseptorPajak || '',
-      ktpFileUrl,
       data['Alkon Sebelumnya Yang di Pakai'] || data.alkonSebelumnya || '',
       data['Halaman Untuk Kepesertaan KB Baru'] || data.kondisiBaru || '',
       '', // Jenis Alkon MKJP & NON MKJP Rumus (empty for now)
@@ -1003,8 +896,7 @@ function testFunction() {
       kondisiBaru: 'Pasca Persalinan',
       alkonSebelumnya: '',
       tempatPelayanan: 'Puskesmas Test',
-      akseptorPajak: 'BPJS',
-      fotoKTP: '' // No file for basic test
+      akseptorPajak: 'BPJS'
     };
     
     const mockEvent = {

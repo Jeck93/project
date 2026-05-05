@@ -31,10 +31,10 @@ class SecureAuthManager {
             ? CONFIG.AUTH.USERS 
             : [];
         
-        // Convert to secure format with hashed passwords
+        // Convert to secure format with plain passwords for demo
         this.secureUsers = configUsers.map(user => ({
             username: user.username,
-            passwordHash: this.simpleHash(user.password),
+            password: user.password, // Plain text for demo
             name: user.name,
             email: user.email,
             role: user.role,
@@ -74,9 +74,9 @@ class SecureAuthManager {
     }
     
     setupLoginForm() {
-        const loginForm = document.getElementById('secureLoginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleSecureLogin(e));
+        const loginBtn = document.getElementById('secureLoginBtn');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', (e) => this.handleSecureLogin(e));
         }
         
         const logoutBtn = document.getElementById('logoutBtn');
@@ -99,12 +99,9 @@ class SecureAuthManager {
             // Add artificial delay to prevent brute force
             await this.delay(1000);
             
-            // Hash the input password
-            const inputHash = this.simpleHash(password);
-            
-            // Find user with matching username and password hash
+            // Find user with matching username and password
             const user = this.secureUsers.find(u => 
-                u.username === username && u.passwordHash === inputHash
+                u.username === username && u.password === password
             );
             
             if (user) {
@@ -279,6 +276,9 @@ class SecureAuthManager {
         }
     }
 }
+
+// Instantiate the auth manager
+new SecureAuthManager();
 
 // Initialize secure auth manager
 document.addEventListener('DOMContentLoaded', () => {

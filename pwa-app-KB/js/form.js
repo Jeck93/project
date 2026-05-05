@@ -3,12 +3,14 @@
 console.log('Form.js loading...');
 
 // Check if logged in (use consistent auth system)
-const authToken = localStorage.getItem('pwa_auth_token');
+const authToken = localStorage.getItem('pwa_secure_token');
+const authType = localStorage.getItem('pwa_auth_type');
 console.log('Auth token:', authToken ? 'Found' : 'Not found');
+console.log('Auth type:', authType);
 
 // Redirect to login if not authenticated
-if (!authToken) {
-    console.log('No auth token, redirecting to login...');
+if (!authToken || authType !== 'secure') {
+    console.log('No valid auth, redirecting to login...');
     window.location.href = 'login.html';
 }
 
@@ -150,15 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize sync status
     initializeSyncStatus();
-    
-    // Initialize photo preview
-    initializePhotoPreview();
-    
-    // Backup: Initialize photo preview with delay
-    setTimeout(() => {
-        console.log('🔄 Backup: Re-initializing photo preview after delay...');
-        initializePhotoPreview();
-    }, 1000);
 });
 
 function initializeFormSubmission() {
@@ -279,118 +272,51 @@ function initializeFormSubmission() {
         console.log('📋 DEBUG: Processed data object:');
         console.log(JSON.stringify(data, null, 2));
         
-        // Handle file upload
-        const fileInput = document.getElementById('fotoKTP');
-        if (fileInput && fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                alert('❌ File harus berupa gambar (JPG, PNG, dll)');
-                return;
-            }
-            
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('❌ Ukuran file maksimal 5MB');
-                return;
-            }
-            
-            console.log('Processing image file:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-            console.log('File type:', file.type);
-            
-            const base64Result = await fileToBase64(file);
-            console.log('Base64 conversion result length:', base64Result.length);
-            console.log('Base64 first 100 chars:', base64Result.substring(0, 100));
-            
-            data.fotoKTP = base64Result;
-            data.fotoKTPName = file.name;
-        }
-        
-        // Save to IndexedDB and Google Sheets
         try {
-            // Ensure database is ready
             const database = await ensureDatabase();
-            
-            // Save to IndexedDB first
             const transaction = database.transaction([storeName], 'readwrite');
             const objectStore = transaction.objectStore(storeName);
-            
-            transaction.onerror = (event) => {
-                console.error('Transaction error:', event.target.error);
-                alert('❌ Error menyimpan data ke database lokal: ' + event.target.error.message);
-            };
-            
             const request = objectStore.add(data);
             
             request.onsuccess = async () => {
                 console.log('Data saved to IndexedDB');
-                
-                // Try to send to Google Sheets using new API
-                if (data.fotoKTP) {
-                    updateSyncStatus('syncing', '📤', 'Upload KTP...');
-                } else {
-                    updateSyncStatus('syncing', '🔄', 'Mengirim...');
-                }
-                
+                updateSyncStatus('syncing', '🔄', 'Mengirim...');
+
                 try {
                     if (navigator.onLine && window.sheetsAPI) {
                         console.log('🌐 Using new sheets API...');
-                        console.log('📤 DEBUG: Data before conversion:', data);
-                        
                         const sheetsData = window.sheetsAPI.convertLocalToSheets(data);
                         console.log('📊 DEBUG: Converted data for sheets:', sheetsData);
-                        console.log('📋 DEBUG: Sheets data keys:', Object.keys(sheetsData));
                         
-                        console.log('🚀 Sending data to Google Sheets...');
                         const result = await window.sheetsAPI.createData(sheetsData);
                         console.log('✅ DEBUG: Sheets API result:', result);
                         
                         if (result && result.success) {
                             updateSyncStatus('online', '✅', 'Tersinkron');
-                            console.log('🎉 Data successfully sent to Google Sheets!');
-                            
-                            if (data.fotoKTP) {
-                                alert('✅ Data dan foto KTP berhasil disimpan ke Google Sheets & Google Drive!');
-                            } else {
-                                alert('✅ Data berhasil disimpan ke Google Sheets!');
-                            }
-                            
-                            // Redirect after successful save
-                            setTimeout(() => {
-                                window.location.href = 'index.html';
-                            }, 2000);
+                            alert('✅ Data berhasil disimpan ke Google Sheets!');
                         } else {
                             console.error('❌ Google Sheets API returned error:', result);
                             throw new Error(result ? result.error : 'Unknown error from Google Sheets');
                         }
                     } else if (navigator.onLine) {
                         console.log('📡 Fallback to old method...');
-                        // Fallback to old method if new API not available
                         await sendToGoogleSheets(data);
                         updateSyncStatus('online', '✅', 'Tersinkron');
-                        
-                        if (data.fotoKTP) {
-                            alert('✅ Data dan foto KTP berhasil disimpan ke Google Sheets & Google Drive!');
-                        } else {
-                            alert('✅ Data berhasil disimpan ke Google Sheets!');
-                        }
-                        
-                        // Redirect after successful save
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 2000);
+                        alert('✅ Data berhasil disimpan ke Google Sheets!');
                     } else {
                         console.warn('⚠️ No internet connection');
                         throw new Error('Tidak ada koneksi internet');
                     }
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
                 } catch (error) {
                     console.error('❌ Failed to send to Google Sheets:', error);
                     console.error('Error details:', error.message);
                     console.error('Error stack:', error.stack);
                     updateSyncStatus('error', '⚠️', 'Gagal sync');
                     
-                    // Show more specific error message
                     if (error.message.includes('CONFIG')) {
                         alert('⚠️ Konfigurasi Google Sheets belum lengkap. Data tersimpan lokal.');
                     } else if (error.message.includes('koneksi') || error.message.includes('internet')) {
@@ -400,18 +326,17 @@ function initializeFormSubmission() {
                     } else {
                         alert('✅ Data berhasil disimpan ke database lokal.\n⚠️ Gagal kirim ke Google Sheets: ' + error.message);
                     }
-                    
-                    // Redirect even if Google Sheets fails (data is saved locally)
+
                     setTimeout(() => {
                         window.location.href = 'index.html';
                     }, 3000);
                 }
             };
-            
-            request.onerror = () => {
-                alert('❌ Gagal menyimpan data: ' + request.error);
+
+            request.onerror = (event) => {
+                console.error('❌ Failed to save to IndexedDB:', event.target.error);
+                alert('❌ Gagal menyimpan data: ' + (event.target.error ? event.target.error.message : 'Unknown error'));
             };
-                
         } catch (error) {
             console.error('Error saving data:', error);
             if (error.message.includes('database') || error.message.includes('Database')) {
@@ -612,24 +537,19 @@ function fileToBase64(file) {
 
 // Send data to Google Sheets
 async function sendToGoogleSheets(data) {
-    // URL Google Apps Script Web App dari config
     let GOOGLE_SCRIPT_URL;
-    
+
     if (typeof CONFIG !== 'undefined' && CONFIG.GOOGLE_SCRIPT_URL) {
         GOOGLE_SCRIPT_URL = CONFIG.GOOGLE_SCRIPT_URL;
     } else {
-        // Fallback URL - use the updated URL from sheets-api.js
         GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbkVQyK7Ur1__izMxhxAkC8DJOnHKV5_qAkLfgko98M8KaT3APfrNpyq5Xq6xbzZn5/exec';
         console.warn('CONFIG not found, using fallback URL');
     }
-    
+
     if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) {
         throw new Error('Google Script URL not configured properly in config.js');
     }
-    
-    console.log('Using Google Script URL:', GOOGLE_SCRIPT_URL);
-    
-    // Prepare data for Google Sheets
+
     const sheetData = {
         timestamp: data.timestamp,
         akseptorKIE: data.akseptorKIE,
@@ -650,22 +570,14 @@ async function sendToGoogleSheets(data) {
         alkonSebelumnya: data.alkonSebelumnya || '',
         tempatPelayanan: data.tempatPelayanan,
         akseptorPajak: data.akseptorPajak,
-        fotoKTP: data.fotoKTP || ''
     };
-    
+
     if (typeof CONFIG !== 'undefined' && CONFIG.DEBUG) {
         console.log('Sending data to Google Sheets:', sheetData);
-        if (sheetData.fotoKTP && sheetData.fotoKTP !== 'Tidak Ada') {
-            console.log('File data being sent - length:', data.fotoKTP ? data.fotoKTP.length : 'no file');
-            console.log('File data first 100 chars:', data.fotoKTP ? data.fotoKTP.substring(0, 100) : 'no file');
-        }
     }
-    
-    // Try CORS first, fallback to no-cors if needed
-    let response;
+
     try {
-        console.log('Trying CORS request first...');
-        response = await fetch(GOOGLE_SCRIPT_URL, {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -673,29 +585,25 @@ async function sendToGoogleSheets(data) {
             },
             body: JSON.stringify(sheetData)
         });
-        
+
         if (typeof CONFIG !== 'undefined' && CONFIG.DEBUG) {
             console.log('CORS Response from Google Sheets:', response.status, response.statusText);
         }
-        
-        if (response.ok) {
-            const result = await response.json();
-            console.log('CORS Response data:', result);
-            if (result.success) {
-                console.log('Data sent to Google Sheets successfully via CORS');
-                return response;
-            } else {
-                throw new Error(result.error || 'Google Sheets returned error');
-            }
-        } else {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+        if (!response.ok) {
+            throw new Error(`Google Sheets request failed: ${response.status} ${response.statusText}`);
         }
-        
+
+        const result = await response.json();
+        if (result && result.success) {
+            return result;
+        }
+
+        throw new Error(result ? result.error || 'Google Sheets returned an unsuccessful response' : 'Invalid response from Google Sheets');
     } catch (corsError) {
         console.warn('CORS request failed, trying no-cors fallback:', corsError.message);
-        
-        // Fallback to no-cors mode
-        response = await fetch(GOOGLE_SCRIPT_URL, {
+
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: {
@@ -703,19 +611,16 @@ async function sendToGoogleSheets(data) {
             },
             body: JSON.stringify(sheetData)
         });
-        
+
         if (typeof CONFIG !== 'undefined' && CONFIG.DEBUG) {
             console.log('No-CORS Response from Google Sheets:', response.status, response.type);
         }
-        
-        // Note: mode 'no-cors' means we can't read the response body
-        // but we can check if the request was sent successfully
+
         if (response.type === 'opaque') {
-            console.log('Data sent to Google Sheets successfully via no-cors');
-            return response;
-        } else {
-            throw new Error('Failed to send data to Google Sheets');
+            return { success: true, message: 'Sent via no-cors' };
         }
+
+        throw new Error('Failed to send data to Google Sheets via fallback no-cors');
     }
 }
 
@@ -774,129 +679,4 @@ function updateSyncStatus(status, icon, text) {
 }
 
 // Initialize photo preview functionality
-function initializePhotoPreview() {
-    console.log('🔧 Initializing photo preview...');
-    
-    const fileInput = document.getElementById('fotoKTP');
-    const previewContainer = document.getElementById('fotoKTPPreview');
-    const previewImage = document.getElementById('fotoKTPImage');
-    const previewInfo = document.getElementById('fotoKTPInfo');
-    const removeButton = document.getElementById('removeFotoKTP');
-    
-    console.log('📋 Photo preview elements check:');
-    console.log('  fileInput:', !!fileInput);
-    console.log('  previewContainer:', !!previewContainer);
-    console.log('  previewImage:', !!previewImage);
-    console.log('  previewInfo:', !!previewInfo);
-    console.log('  removeButton:', !!removeButton);
-    
-    if (!fileInput || !previewContainer || !previewImage || !previewInfo || !removeButton) {
-        console.error('❌ Photo preview elements not found');
-        console.error('Missing elements:', {
-            fileInput: !fileInput,
-            previewContainer: !previewContainer,
-            previewImage: !previewImage,
-            previewInfo: !previewInfo,
-            removeButton: !removeButton
-        });
-        return;
-    }
-    
-    console.log('✅ All photo preview elements found, adding event listeners...');
-    
-    // Handle file selection
-    fileInput.addEventListener('change', function(e) {
-        console.log('📸 File input changed:', e.target.files.length, 'files');
-        const file = e.target.files[0];
-        
-        if (file) {
-            console.log('📁 File selected:', file.name, 'Type:', file.type, 'Size:', file.size);
-            
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                console.error('❌ Invalid file type:', file.type);
-                alert('❌ File harus berupa gambar (JPG, PNG, dll)');
-                fileInput.value = '';
-                hidePreview();
-                return;
-            }
-            
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                console.error('❌ File too large:', file.size);
-                alert('❌ Ukuran file maksimal 5MB');
-                fileInput.value = '';
-                hidePreview();
-                return;
-            }
-            
-            console.log('✅ File validation passed, showing preview...');
-            // Show preview
-            showPreview(file);
-        } else {
-            console.log('📭 No file selected, hiding preview');
-            hidePreview();
-        }
-    });
-    
-    // Handle remove button
-    removeButton.addEventListener('click', function() {
-        console.log('🗑️ Remove button clicked');
-        fileInput.value = '';
-        hidePreview();
-    });
-    
-    function showPreview(file) {
-        console.log('🖼️ Showing preview for:', file.name);
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            console.log('✅ File read successfully, updating preview');
-            previewImage.src = e.target.result;
-            previewInfo.textContent = `📁 ${file.name} (${formatFileSize(file.size)})`;
-            previewContainer.style.display = 'block';
-            previewContainer.classList.add('has-image');
-            
-            // Add smooth animation
-            previewContainer.style.opacity = '0';
-            previewContainer.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
-                previewContainer.style.transition = 'all 0.3s ease';
-                previewContainer.style.opacity = '1';
-                previewContainer.style.transform = 'translateY(0)';
-                console.log('🎨 Preview animation completed');
-            }, 10);
-        };
-        
-        reader.onerror = function() {
-            console.error('❌ Failed to read file');
-            alert('❌ Gagal membaca file gambar');
-            hidePreview();
-        };
-        
-        reader.readAsDataURL(file);
-    }
-    
-    function hidePreview() {
-        console.log('🙈 Hiding preview');
-        previewContainer.style.display = 'none';
-        previewContainer.classList.remove('has-image');
-        previewImage.src = '';
-        previewInfo.textContent = '';
-    }
-    
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    
-    console.log('✅ Photo preview initialization completed');
-}
-
 console.log('Form.js loaded successfully');
